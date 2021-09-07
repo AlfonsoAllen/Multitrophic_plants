@@ -2,6 +2,7 @@ setwd("~/Tesis/R_repositorios/Multitrophic_plants")
 
 library(tidyverse)
 library(cxr)
+library(dplyr)
 
 
 #este script es para probar el codigo con los datos de 2020 de Caracoles. 
@@ -33,8 +34,28 @@ salt.s <- salt [,c("ID_obs", "Salinity")] # necesito luego tener una sublista po
 
 #importante, los datos de salinidad los tengo que tener sumados, nos interesa saber
 #el valor de todo el año
-sal.simple <- salt %>% group_by(Plot, Subplot) %>% summarise(sal = sum(Salinity))
+sal.simple <- salt %>% group_by(Plot, Subplot) %>% summarise(sal = sum(Salinity))%>%
+    ungroup()
 
+which(is.na(sal.simple$sal))
+any(is.na(sal.simple))
+str(sal.simple)
+#sal.simple <- as.data.frame(sal.simple)
+sal.prueba2[3,78]<-0.122
+sal.prueba<-as.data.frame(sal.simple)
+sal.prueba2 <- sal.simple
+###problema R ----
+sal.prueba$sal[is.na(filter(sal.prueba, Plot == 3, Subplot == 'A6'))] <-0.1231
+sal.prueba$sal[is.na(filter(sal.prueba, Plot == 9, Subplot == 'F4'))] <-0.122
+sal.prueba$sal[is.na(filter(sal.prueba, Plot == 4, Subplot == 'F3'))] <-0.0894
+sal.prueba$sal[is.na(filter(sal.prueba, Plot == 6, Subplot == 'B1'))] <-0.1069
+
+
+
+
+
+which(is.na(sal.simple$sal))
+any(is.na(sal.prueba))
 
 #tengo que cargar los datos de seeds survival y germination
 
