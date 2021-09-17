@@ -63,7 +63,7 @@ initial_values = list(lambda = 1,
 
 # same with boundaries
 lower_bounds = list(lambda = 0,
-                    alpha_intra = -1,
+                    alpha_intra = 0,
                     alpha_inter = -1,
                     lambda_cov = c(-1,0,-1),
                     alpha_cov = c(-1,0,-1))
@@ -119,7 +119,7 @@ fit_3sp <- cxr_pm_multifit(data = obs_3sp,
                                                lambda_cov = 1,
                                                alpha_cov = 1),
                            # no standard errors
-                           bootstrap_samples = 0) #dan errores que no entiendo. Pero corre
+                           bootstrap_samples = 0) #errores
 
 summary(fit_3sp)
 fit_3sp$log_likelihood #son valores negativos lo qe devuelve aunque aparezca
