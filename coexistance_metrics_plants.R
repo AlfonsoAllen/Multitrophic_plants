@@ -42,6 +42,58 @@ head(cov1[[1]])
 # number of covariate observations
 nrow(cov1[[1]])
 
+#function parameters
+model_family <- "BH"
+covariates <- cov1
+# bobyqa is generally more robust than other bounded methods
+optimization_method <- "bobyqa"
+alpha_form <- "pairwise"
+lambda_cov_form <- "global"
+alpha_cov_form <- "pairwise"
+# note how lambda_cov and alpha_cov
+# have different initial values for each covariate effect
+# the commented assignations are also possible, 
+# giving equal initial values to all parameters
+initial_values = list(lambda = 1,
+                      alpha_intra = 0.1,
+                      alpha_inter = 0.1,
+                      lambda_cov = c(0.1,0.2,0.1),
+                      alpha_cov = c(0.1,0.2,0.1))
+
+
+# same with boundaries
+lower_bounds = list(lambda = 0,
+                    alpha_intra = -1,
+                    alpha_inter = -1,
+                    lambda_cov = c(-1,0,-1),
+                    alpha_cov = c(-1,0,-1))
+
+upper_bounds = list(lambda = 100,
+                    alpha_intra = 1,
+                    alpha_inter = 1,
+                    lambda_cov = c(1,2,1),
+                    alpha_cov = c(1,2,1))
+
+
+fixed_terms <- NULL
+bootstrap_samples <- 3
+
+
+fit_multi_cov <- cxr_pm_multifit(data = obs_3sp,
+                                 focal_column = my.sp2,
+                                 model_family = model_family,
+                                 covariates = covariates,
+                                 optimization_method = optimization_method,
+                                 alpha_form = alpha_form,
+                                 lambda_cov_form = lambda_cov_form,
+                                 alpha_cov_form = alpha_cov_form,
+                                 initial_values = initial_values,
+                                 lower_bounds = lower_bounds,
+                                 upper_bounds = upper_bounds,
+                                 fixed_terms = fixed_terms,
+                                 bootstrap_samples = bootstrap_samples) #error: function returned is infinite or NA
+
+
 fit_3sp <- cxr_pm_multifit(data = obs_3sp,
                            focal_column = my.sp2,
                            model_family = "RK",
@@ -50,7 +102,7 @@ fit_3sp <- cxr_pm_multifit(data = obs_3sp,
                            covariates = cov1,
                            alpha_form = "pairwise",
                            lambda_cov_form = "global", # effect of covariates over lambda
-                           alpha_cov_form = "global", # effect of covariates over alpha
+                           alpha_cov_form = "pairwise", # effect of covariates over alpha
                            initial_values = list(lambda = 1,
                                                  alpha_intra = 0.1,
                                                  alpha_inter = 0.1,
