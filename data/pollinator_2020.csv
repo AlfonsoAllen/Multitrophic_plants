@@ -287,7 +287,7 @@ Day;Month;Year;Plot;Subplot;Group;Order;Family;Genus;Species;ID;ID_Simple;G_F;Pl
 5;3;2020;2;F2;Fly;Diptera;Ulidiidae;NA;NA;Ulidiidae;Ulidiidae;Small_flies;CHFU;NA;1;;NA;L;;
 5;3;2020;1;F5;Fly;Diptera;Ulidiidae;NA;NA;Ulidiidae;Ulidiidae;Small_flies;CHFU;NA;1;;NA;L;;
 5;3;2020;7;D1;Bee;Hymenoptera;Andrenidae;Andrena;humilis;Andrena_humilis;Andrena_humilis;Solitary_bees;LEMA;NA;3;2_10_3;NA;L;Andrena_2_10_3. female;
-5;3;2020;7;B2;Beetle;Coleoptera;Nitidulidae;Brassicogethes;NA;Brassicogethes_sp.;Brassicogethes_sp.;Small_beetles;LEMA;NA;;;NA;L;;
+5;3;2020;7;B2;Beetle;Coleoptera;Nitidulidae;Brassicogethes;NA;Brassicogethes_sp.;Brassicogethes_sp.;Small_beetles;LEMA;NA;1;;NA;L;;
 5;3;2020;7;F2;Fly;Diptera;Ulidiidae;NA;NA;Ulidiidae;Ulidiidae;Small_flies;CHFU;NA;1;;NA;L;;
 5;3;2020;8;A5;Fly;Diptera;Ulidiidae;NA;NA;Ulidiidae;Ulidiidae;Small_flies;CHFU;NA;1;;NA;L;;
 5;3;2020;8;A6;Fly;Diptera;Syrphidae;NA;NA;Syrphidae;Syrphidae;Hoverflies;CHFU;NA;1;;NA;L;;
@@ -1267,7 +1267,7 @@ Day;Month;Year;Plot;Subplot;Group;Order;Family;Genus;Species;ID;ID_Simple;G_F;Pl
 6;5;2020;1;D4;Beetle;Coleoptera;Nitidulidae;Brassicogethes;NA;Brassicogethes_sp.;Brassicogethes_sp.;Small_beetles;LEMA;NA;1;;13:01;M;;
 6;5;2020;1;D4;Beetle;Coleoptera;Nitidulidae;Brassicogethes;NA;Brassicogethes_sp.;Brassicogethes_sp.;Small_beetles;LEMA;NA;1;;13:01;M;;
 6;5;2020;1;D4;Beetle;Coleoptera;Melyridae;Psilothrix;Psilothrix_viridicoerulea;Psilothrix_viridicoerulea;Psilothrix_viridicoerulea;Flower_beetles;LEMA;NA;1;;13:01;M;;
-6;5;2020;1;D4;Butterfly;Lepidoptera;NA;NA;NA;Lepidoptera;Geometridae;Butterflies;LEMA;NA;1;;13:01;M;Grisaceo. Antenaslargas y alas agriscaeas dobladas sobre s? mismo pegada a la espalda;
+6;5;2020;1;D4;Butterfly;Lepidoptera;NA;NA;NA;Lepidoptera;Geometridae_but;Butterflies;LEMA;NA;1;;13:01;M;Grisaceo. Antenaslargas y alas agriscaeas dobladas sobre s? mismo pegada a la espalda;
 6;5;2020;1;D3;Beetle;Coleoptera;Nitidulidae;Brassicogethes;NA;Brassicogethes_sp.;Brassicogethes_sp.;Small_beetles;LEMA;NA;1;;13:01;M;;
 6;5;2020;1;D3;Beetle;Coleoptera;Nitidulidae;Brassicogethes;NA;Brassicogethes_sp.;Brassicogethes_sp.;Small_beetles;LEMA;NA;1;;13:01;M;;
 6;5;2020;1;C3;Beetle;Coleoptera;Nitidulidae;Brassicogethes;NA;Brassicogethes_sp.;Brassicogethes_sp.;Small_beetles;LEMA;NA;1;;13:01;M;;
@@ -1458,7 +1458,7 @@ Day;Month;Year;Plot;Subplot;Group;Order;Family;Genus;Species;ID;ID_Simple;G_F;Pl
 19;5;2020;3;C4;Beetle;Coleoptera;Nitidulidae;Brassicogethes;NA;Brassicogethes_sp.;Brassicogethes_sp.;Small_beetles;LEMA;NA;1;;12:22;L;;
 19;5;2020;3;E6;Beetle;Coleoptera;Nitidulidae;Brassicogethes;NA;Brassicogethes_sp.;Brassicogethes_sp.;Small_beetles;LEMA;NA;1;;12:22;L;;
 19;5;2020;3;C2;Beetle;Coleoptera;Chrysomelidae;Cassida_sp.;NA;Cassida_sp.;Cassida_sp.;Small_beetles;LEMA;NA;1;;12:22;L;Rainbow_beetle;
-19;5;2020;3;E1;Butterfly;Lepidoptera;Geometridae;NA;NA;Geometridae;Geometridae;Butterflies;LEMA;NA;1;;12:22;L;white moth;
+19;5;2020;3;E1;Butterfly;Lepidoptera;Geometridae;NA;NA;Geometridae;Geometridae_but;Butterflies;LEMA;NA;1;;12:22;L;white moth;
 19;5;2020;3;E3;Fly;Diptera;Bombylidae;NA;NA;Bombyliidae;Anastoechus_sp.;Humbleflies;LEMA;NA;1;;12:22;L;;
 19;5;2020;2;E1;Beetle;Coleoptera;Nitidulidae;Brassicogethes;NA;Brassicogethes_sp.;Brassicogethes_sp.;Small_beetles;LEMA;NA;1;;13:05;L;;
 19;5;2020;2;E2;Beetle;Coleoptera;Nitidulidae;Brassicogethes;NA;Brassicogethes_sp.;Brassicogethes_sp.;Small_beetles;LEMA;NA;1;;13:05;L;;
@@ -1478,13 +1478,13 @@ Day;Month;Year;Plot;Subplot;Group;Order;Family;Genus;Species;ID;ID_Simple;G_F;Pl
 19;5;2020;1;D5;Beetle;Coleoptera;Melyridae;Psilothrix;Psilothrix_viridicoerulea;Psilothrix_viridicoerulea;Psilothrix_viridicoerulea;Flower_beetles;LEMA;NA;1;;13:35;L;;
 18;5;2020;8;F6;Fly;Diptera;Syrphidae;Episyrphus;Episyrphus_balteatus;Episyrphus_balteatus;Episyrphus_balteatus;Hoverflies;LEMA;NA;2;;13:35;L;;
 18;5;2020;8;F6;Bee;Hymenoptera;Megachilidae;Osmia;ligurica;Osmia_ligurica;Osmia_ligurica;Solitary_bees;MESU;NA;9;4_19_5;13:35;L;Bee_4.19.5;
-18;5;2020;8;F6;Butterfly;Lepidoptera;Lasiocampidae;Lasiocampa;Lasiocampa trifolii;Lasiocampa_trifolii;Lasiocampa_trifolii;Butterflies;LEMA;NA;3;;13:35;L;;
+18;5;2020;8;F6;Butterfly;Lepidoptera;Lasiocampidae;Lasiocampa;Lasiocampa trifolii;Lasiocampa_trifolii;Lasiocampa_trifolii_but;Butterflies;LEMA;NA;3;;13:35;L;;
 18;5;2020;8;E5;Fly;Diptera;Bombylidae;NA;NA;Bombyliidae;Anastoechus_sp.;Humbleflies;LEMA;NA;3;;13:35;L;;
 18;5;2020;8;F6;Fly;Diptera;Syrphidae;Episyrphus;Episyrphus_balteatus;Episyrphus_balteatus;Episyrphus_balteatus;Hoverflies;MESU;NA;1;;13:35;L;;
 18;5;2020;8;F5;Bee;Hymenoptera;Megachilidae;Osmia;ligurica;Osmia_ligurica;Osmia_ligurica;Solitary_bees;MESU;NA;1;4_19_5;13:35;L;Bee_4.19.5;
 18;5;2020;9;E2;Fly;Diptera;Tachinidae;Cylindromyia;NA;Cylindromyia_sp.;Cylindromyia_sp.;House_flies;LEMA;NA;3;;13:35;L;;
 18;5;2020;9;D3;Butterfly;Lepidoptera;Pieridae;Euchloe;Euchloe_crameri;Euchloe_crameri;Euchloe_crameri;Butterflies;LEMA;NA;1;;13:35;L;;
-18;5;2020;9;E4;Butterfly;Lepidoptera;Lasiocampidae;Lasiocampa;Lasiocampa trifolii;Lasiocampa_trifolii;Lasiocampa_trifolii;Butterflies;PUPA;NA;2;;13:35;L;;
+18;5;2020;9;E4;Butterfly;Lepidoptera;Lasiocampidae;Lasiocampa;Lasiocampa trifolii;Lasiocampa_trifolii;Lasiocampa_trifolii_but;Butterflies;PUPA;NA;2;;13:35;L;;
 18;5;2020;5;F6;Beetle;Coleoptera;Melyridae;Psilothrix;Psilothrix_viridicoerulea;Psilothrix_viridicoerulea;Psilothrix_viridicoerulea;Flower_beetles;LEMA;NA;1;;NA;L;;
 18;5;2020;5;F6;Beetle;Coleoptera;Nitidulidae;Brassicogethes;NA;Brassicogethes_sp.;Brassicogethes_sp.;Small_beetles;LEMA;NA;1;;NA;L;;
 18;5;2020;5;F3;Beetle;Coleoptera;Nitidulidae;Brassicogethes;NA;Brassicogethes_sp.;Brassicogethes_sp.;Small_beetles;LEMA;NA;1;;NA;L;;
