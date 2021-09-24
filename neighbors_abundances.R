@@ -11,7 +11,7 @@ prueba1 <- gather(comp,"BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO",
 
 prueba1$ID <- paste(prueba1$focal, prueba1$Plant, sep="_")
 numero.combinacion.vecinos <-  prueba1 %>% group_by(ID) %>% summarise(total = sum(abundance))%>%
-    ungroup()
+    ungroup() #base de datos con las abundancias por pares de especies
 numero.combinacion.vecinos$ID <- as.factor(numero.combinacion.vecinos$ID)
 bb.mean <- numero.combinacion.vecinos %>% group_by(ID) %>% summarise(mean_neigh = mean(abundance))%>%
     ungroup()
