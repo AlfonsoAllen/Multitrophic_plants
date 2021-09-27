@@ -157,10 +157,25 @@ comp.20 <- comp.20[,c("Plot", "Subplot", "Focal", "fitness", "BEMA","CHFU","CHMI
                   ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
 comp.20.1 <- comp.20 %>% filter(Focal!= "RAPE", Focal!="MEPO", Focal!="COSQ" , Focal!= "SUSP", 
                           Focal!="FRPU",Focal!="MEEL", Focal!= "CHMI", Focal!= "SASO")
-comp.20.1<- comp.20.1[,c("Focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
+comp.20.1$focal <- comp.20.1$Focal
+comp.20.1.join <- comp.20.1[,c("Plot", "Subplot", "focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
+                             ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
+comp.20.1<- comp.20.1[,c("focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
            ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
 
-comp.20.1$focal <- comp.20.1$Focal
+comp.20.1$check1 <- rowSums(comp.20.1[,3:24])
+min(comp.20.1$check1) #hay filas enteras con 0 vecinos. Hya que eliminarlos. 
+comp.20.1 <- comp.20.1 %>% filter(check1!= "0")
+comp.20.1 <- comp.20.1[,c("focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
+             ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
+
+comp.20.1.join$check1 <- rowSums(comp.20.1.join[,5:26])
+min(comp.20.1.join$check1) #hay filas enteras con 0 vecinos. Hya que eliminarlos. 
+comp.20.1.join <- comp.20.1.join %>% filter(check1!= "0")
+comp.20.1.join <- comp.20.1.join[,c("Plot","Subplot","focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
+                          ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
+
+
 #position$plot <- position$Plot
 #position$subplot <- position$Subplot
 #comp.19.completa <- left_join(position, comp.19)#asi me aseguro de que esté todos los plots
@@ -168,28 +183,43 @@ comp.19 <- comp.19[,c("plot", "subplot" ,"focal", "fitness", "BEMA","CHFU","CHMI
                       ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
 comp.19.1 <-comp.19 %>% filter(focal!= "RAPE", focal!="MEPO", focal!="COSQ" , 
                                  focal!= "SUSP", focal!="FRPU",focal!="MEEL", focal!= "CHMI", focal!= "SASO")
+comp.19.1.join <- comp.19.1[,c("plot", "subplot" ,"focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
+             ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
 comp.19.1 <- comp.19.1[,c("focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
            ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
+comp.19.1$check1 <- rowSums(comp.19.1[,3:24]) #hay filas con 0 vecinos, hay que eliminarlos
+min(comp.19.1$check1)
+comp.19.1 <- comp.19.1 %>% filter(check1!= "0")
+comp.19.1 <- comp.19.1[,c("focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
+                          ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
+
+comp.19.1.join$check1 <- rowSums(comp.19.1.join[,5:26]) #hay filas con 0 vecinos, hay que eliminarlos
+min(comp.19.1.join$check1)
+comp.19.1.join <- comp.19.1.join %>% filter(check1!= "0")
+comp.19.1.join <- comp.19.1.join[,c("plot", "subplot","focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
+                          ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
+
 
 #join the competition data
 c.20 <- colnames(comp.20.1)
 c.19 <- colnames(comp.19.1)
 common_names <- intersect(c.20, c.19)
 total_comp <- rbind(comp.20.1[common_names], comp.19.1[common_names])
+ghj<- rowSums(total_comp [,2:23])
+min(ghj)
 
-
-#write.csv2(total_comp, file ="C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/total_comp_19_20.csv", row.names = FALSE)
+#write.csv2(total_comp, file ="C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/total_comp_19_20.check.csv", row.names = FALSE)
 
 #exploratory analyses
 #competencia: filtrar por especies. una vez lo tenga hecho por especies tengo que sumar los vecinos intra+ inter
 #y plotear numero de vecinos segun el fitness
-comp.20.junto <- gather(comp.20,"BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
+comp.20.junto <- gather(comp.20.1.join,"BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
                         ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE",
                         key = "Plant", value ="abundance" )
-comp.20.junto <- comp.20.junto %>% filter(Focal!= "RAPE", Focal!="MEPO", Focal!="COSQ" , Focal!= "SUSP", 
-                                          Focal!= "SUSP", Focal!="FRPU")
+comp.20.junto <- comp.20.junto %>% filter(focal!= "RAPE", focal!="MEPO", focal!="COSQ" , focal!= "SUSP", 
+                                          focal!= "SUSP", focal!="FRPU")
 
-comp.19.junto <- gather(comp.19,"BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
+comp.19.junto <- gather(comp.19.1.join,"BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
                         ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE",
                         key = "Plant", value ="abundance" )
 comp.19.junto <- comp.19.junto %>% filter(focal!= "RAPE", focal!="MEPO", focal!="COSQ" , focal!= "SUSP", 
@@ -201,9 +231,9 @@ comp.19.junto <- comp.19.junto %>% filter(focal!= "RAPE", focal!="MEPO", focal!=
 
 #aqui podría crear una columna donde pusiera vecinos intra y vecinos inter. esto tiene que
 #ser a partir de un condicionante if, y de alguna funcion mutate
-neigh.20 <- comp.20.junto %>% group_by(Plot, Subplot, Focal, fitness) %>% summarise (neigh = sum(abundance))%>%
+neigh.20 <- comp.20.junto %>% group_by(Plot, Subplot, focal, fitness) %>% summarise (neigh = sum(abundance))%>%
     ungroup()
-neigh.20 <- subset(neigh.20, Focal %in% c("SOAS","CHFU","LEMA", "SCLA","BEMA","CETE","MESU","PUPA", "SPRU", "HOMA","POMA","POMO",
+neigh.20 <- subset(neigh.20, focal %in% c("SOAS","CHFU","LEMA", "SCLA","BEMA","CETE","MESU","PUPA", "SPRU", "HOMA","POMA","POMO",
                                          "PAIN", "PLCO" ))
 
 neigh.19 <- comp.19.junto %>% group_by(plot, subplot, focal, fitness) %>% summarise (neigh = sum(abundance))%>%
@@ -231,9 +261,9 @@ ggplot(neigh.19, aes(x = neigh, y = log(fitness), group = focal))+
 #nota, podría distinguir vecinos intra e inter
 
 
-ggplot(neigh.20, aes(x = neigh, y = log(fitness), group = Focal))+
-    geom_point(aes(color = Focal))+
-    geom_smooth(method = "lm", aes(color = Focal))+
+ggplot(neigh.20, aes(x = neigh, y = log(fitness), group = focal))+
+    geom_point(aes(color = focal))+
+    geom_smooth(method = "lm", aes(color = focal))+
     ylab("log seed")+
     xlab("Number of neighbors")+
     ylim(0, 10)+
@@ -241,10 +271,11 @@ ggplot(neigh.20, aes(x = neigh, y = log(fitness), group = Focal))+
     NULL
 #join all the data ----
 #2020
-comp.20$Plant_simple <- comp.20$Focal
+comp.20.1.join$Plant_simple <- comp.20.1.join$focal
 agroup.h.20 <- h.20.group %>% group_by(Plot, Subplot, Plant_simple) %>% summarise (herb1 = sum(herb))%>%
     ungroup()
-h.20.comp <- left_join(comp.20, agroup.h.20)
+h.20.comp <- left_join(comp.20.1.join, agroup.h.20)#corregido
+
 s.herb <- h.20.comp[,c("Plot", "Subplot", "herb1", "Plant_simple")]
 s.herb$Plant <- s.herb$Plant_simple
 s.herb$herb1 <- as.numeric(s.herb$herb1)
@@ -262,10 +293,10 @@ agrup.h.19 <- h.19.group.1 %>% group_by(Plot, Subplot, Plant_Simple) %>% summari
     ungroup()
 agrup.fv.19 <- fv.19 %>% group_by(Plot, Subplot, Plant) %>% summarise (fv1 = sum(fv))%>%
     ungroup()
-comp.19$Plot <- comp.19$plot
-comp.19$Subplot <- comp.19$subplot
-comp.19$Plant_Simple <- comp.19$focal
-h.19.comp <- left_join(comp.19, agrup.h.19)
+comp.19.1.join$Plot <- comp.19.1.join$plot
+comp.19.1.join$Subplot <- comp.19.1.join$subplot
+comp.19.1.join$Plant_Simple <- comp.19.1.join$focal
+h.19.comp <- left_join(comp.19.1.join, agrup.h.19) #8corregido
 s.herb.19 <- h.19.comp[,c("Plot", "Subplot", "herb1", "Plant_Simple")]
 s.herb.19$Plant <- s.herb.19$Plant_Simple
 s.herb.19$herb1 <- as.numeric(s.herb.19$herb1)
@@ -288,3 +319,4 @@ total <- rbind(cov.clean.20,cov.clean.19)
 
 
 #write.csv2(total, file ="C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/covariates_salt_h_fv_20_19.csv", row.names = FALSE)
+
