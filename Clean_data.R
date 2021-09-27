@@ -207,8 +207,18 @@ common_names <- intersect(c.20, c.19)
 total_comp <- rbind(comp.20.1[common_names], comp.19.1[common_names])
 ghj<- rowSums(total_comp [,2:23])
 min(ghj)
+c.20.1 <- colnames(comp.20.1.join)
+comp.20.1.join$plot <- comp.20.1.join$Plot
+comp.20.1.join$subplot <- comp.20.1.join$Subplot
+c.19.1 <- colnames(comp.19.1.join)
+common_names1 <- intersect(c.20.1, c.19.1)
+
+total_comp_withplots <- rbind(comp.20.1.join[common_names1], comp.19.1.join[common_names1])
+
 
 #write.csv2(total_comp, file ="C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/total_comp_19_20.check.csv", row.names = FALSE)
+#write.csv2(total_comp_withplots, file ="C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/total_comp_19_20_withplot_subplot.csv", row.names = FALSE)
+
 
 #exploratory analyses
 #competencia: filtrar por especies. una vez lo tenga hecho por especies tengo que sumar los vecinos intra+ inter
