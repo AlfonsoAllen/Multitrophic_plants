@@ -2,9 +2,8 @@ library(tidyverse)
 library(cxr)
 library(ggplot2)
 
-
-comp<-read.csv("total_comp_19_20.check.csv", header=T, sep=";")
-env<-read.csv("covariates_salt_h_fv_20_19.csv", header=T, sep=";")
+comp<-read.csv("data/total_comp_19_20.check.csv", header=T, sep=";")
+env<-read.csv("data/covariates_salt_h_fv_20_19.csv", header=T, sep=";")
 all.sp<-unique(comp$focal)
 all.sp<-all.sp[-c(15:16)]
 
@@ -78,7 +77,7 @@ fit2 <- cxr_pm_multifit(data = obs2,
                         upper_bounds = list(lambda = 2000, alpha_intra = 1, alpha_inter = 1),
                         bootstrap_samples = 0)
 
-
+summary(fit2)
 #matrix<-fit2$alpha_matrix
 #colnames(matrix)<-sub("^X+", "", colnames(matrix)) #remove the x associated
 
@@ -90,14 +89,19 @@ fit2 <- cxr_pm_multifit(data = obs2,
 obs4 <- obs_total
 all.sp4<-names(obs4)
 
+fit2_matrix <- fit2$alpha_matrix
+
+
 fit4<-list()
 for(i in 1:length(all.sp4)){
   obs<-obs4[i]
   sp <- all.sp4[i]
   x <- as.data.frame(obs4[[i]][,1])
   lambda <- mean(x[,1])
-  inter <- 0.1 ### rellenar por lo que sale del modelo 2
-  intra <- 0.1 #### rellenar por lo que sale del modelo 2
+  #inter <- 0.1 ### rellenar por lo que sale del modelo 2
+  #intra <- 0.1 #### rellenar por lo que sale del modelo 2
+  inter <- fit2_matrix[sp,which(colnames(fit2_matrix)== c("neighbours"))]
+  intra <- fit2_matrix[sp,sp]
 
 fit <- cxr_pm_multifit(data = obs,
                         focal_column = sp,
@@ -113,10 +117,12 @@ fit4[[i]]<- fit
 
 }
 
+#a <- fit2$alpha_matrix[fit2$alpha_matrix,which(colnames(sp)== c("neighbors"))] pensar como sacar las intra e inter
+
 
 names(fit4)<-all.sp4
 
-#fit 5 include each covariable separately ----
+#5.fit 5 include each covariable separately ----
 obs5<-obs_total
 all.sp5<-all.sp
 
@@ -128,6 +134,8 @@ for(i in 1:length(fit4)){
 }
 
 sp_matrix<-do.call("rbind", x)
+
+
 
 salinity <-list()
 for (i in 1:length(all.sp5)){
@@ -163,7 +171,7 @@ upper_bounds = list(lambda = 4000,
                     lambda_cov = 4,
                     alpha_cov = 4)
 
-
+#5.1. salinity----
 fit5_salinity<-list()
 for(i in 1:length(all.sp5)){
   obs<-obs5[i]
@@ -195,8 +203,69 @@ for(i in 1:length(all.sp5)){
 
 names(fit5_salinity)<-all.sp5
 
-
+# 5.2 Herb----
   
+fit5_herb<-list()
+for(i in 1:length(all.sp5)){
+  obs<-obs5[i]
+  sp <- all.sp5[i]
+  env_list <-herb[i]
+  lambda <- fit4[[i]]$lambda
+  inter <- sp_matrix[sp,which(colnames(sp_matrix)!=sp)]
+  inter <-mean(inter[,1])
+  intra <- sp_matrix[sp,sp]
+  
+  fit <- cxr_pm_multifit(data = obs,
+                         focal_column = sp,
+                         model_family = "BH",
+                         covariates = env_list,
+                         optimization_method = "bobyqa",
+                         alpha_form = "pairwise",
+                         lambda_cov_form = "global", # effect of covariates over lambda
+                         alpha_cov_form = "global", # effect of covariates over alpha
+                         initial_values = list(lambda = lambda, alpha_intra =intra, alpha_inter = inter,
+                                               lambda_cov = 0, alpha_cov = 0),
+                         lower_bounds = lower_bounds,
+                         upper_bounds = upper_bounds,
+                         bootstrap_samples = 0)
+  
+  fit5_herb[[i]]<- fit
+  
+}
 
 
+names(fit5_herb)<-all.sp5
+
+
+# 5.3 floral visitors ----
+fit5_pol<-list()
+for(i in 1:length(all.sp5)){
+  obs<-obs5[i]
+  sp <- all.sp5[i]
+  env_list <-pol[i]
+  lambda <- fit4[[i]]$lambda
+  inter <- sp_matrix[sp,which(colnames(sp_matrix)!=sp)]
+  inter <-mean(inter[,1])
+  intra <- sp_matrix[sp,sp]
+  
+  fit <- cxr_pm_multifit(data = obs,
+                         focal_column = sp,
+                         model_family = "BH",
+                         covariates = env_list,
+                         optimization_method = "bobyqa",
+                         alpha_form = "pairwise",
+                         lambda_cov_form = "global", # effect of covariates over lambda
+                         alpha_cov_form = "global", # effect of covariates over alpha
+                         initial_values = list(lambda = lambda, alpha_intra =intra, alpha_inter = inter,
+                                               lambda_cov = 0, alpha_cov = 0),
+                         lower_bounds = lower_bounds,
+                         upper_bounds = upper_bounds,
+                         bootstrap_samples = 0)
+  
+  fit5_pol[[i]]<- fit
+  
+}
+
+
+names(fit5_pol)<-all.sp5
 
