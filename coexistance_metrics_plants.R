@@ -110,11 +110,11 @@ names(mis_species)
 # observation data
 head(mis_species[[1]])
 # number of fitness observations
-nrow(mis_species[[4]])
+nrow(mis_species[[3]])
 # salinity data
 head(cov1[[1]])
 # number of covariate observations
-nrow(cov1[[4]])
+nrow(cov1[[3]])
 
 #       each separate covariable per model----
 #1.salinity ----
@@ -217,6 +217,21 @@ summary(modelo.sal.inter.intra) #modelo con Inter +intra
                                           #de los modelos
 modelo.sal.inter.intra$log_likelihood #estos datos voy a tener que meterlos en una tabla para ver cual es el mejor modelo
 
+###################grafico
+
+chfu<-as.data.frame(mis_species_intra_inter$CHFU)
+lambda_chfu <- modelo.sal.inter.intra$lambda["CHFU"]
+alpha_chfu <- modelo.sal.inter.intra$alpha_matrix["CHFU","inter"]
+alpha_cov_chfu <- unique(modelo.sal.inter.intra$alpha_cov$sal["CHFU",])
+lambda_cov_chfu <- modelo.sal.inter.intra$lambda_cov["CHFU",]
+
+#para salinidad igual a 1
+f<-function(x) (lambda_chfu*(1+lambda_cov_chfu*1))/(1+(alpha_chfu +alpha_cov_chfu*1)*x)
+x <- chfu$inter
+y<- chfu$fitness
+plot(x,log(y), ylim = c(0,10))
+lines(x, f(x), col="red")
+##############################
 #2.herb ----
 #load covariates: herb
 #herb con todas las especies por separado
@@ -229,11 +244,11 @@ for(i in 1:length(herb)){
 head(mis_species_junto[[1]]) #para los modelos los datos que van en el argument de data son los mismos si considero
 #                           todas las especies juntas y luego cunaod consideros las de intra+inter
 # number of fitness observations
-nrow(mis_species_junto[[1]])
+nrow(mis_species_junto[[3]])
 # salinity data
 head(herb[[1]])
 # number of salinity observations
-nrow(herb[[1]])
+nrow(herb[[3]])
 modelo.herb.junto <- cxr_pm_multifit(data = mis_species_junto,
                               focal_column = my.sp2,
                               model_family = "BH",
@@ -357,7 +372,7 @@ modelo.fv.intra.inter <- cxr_pm_multifit(data = mis_species_intra_inter,
                                                    lambda_cov = 0.1,
                                                    alpha_cov = 0.1),
                              lower_bounds = list(lambda = 0,
-                                                 alpha_intra = 0,
+                                                 alpha_intra = 0,#podria ser -1 no? ####
                                                  alpha_inter = -1,
                                                  lambda_cov = -1,
                                                  alpha_cov = -1),
@@ -531,9 +546,9 @@ alpha_cov_form <- "global"
 # have different initial values for each covariate effect
 # the commented assignations are also possible, 
 # giving equal initial values to all parameters
-initial_values_juntas = list(lambda = mean.lambda.junto.vec,
-                      alpha_intra = mean.alpha.intra.junto,
-                      alpha_inter = mean.alpha.inter.junto,
+initial_values_juntas = list(lambda = mean(mean.lambda.junto.vec),
+                      alpha_intra = mean(mean.alpha.intra.junto),
+                      alpha_inter = mean(mean.alpha.inter.junto),
                       lambda_cov = lambda_cov_junto,
                       alpha_cov = c(alpha_cov_sal_juntas,alpha_cov_herb_juntas, alpha_cov_fv_juntas))
 
@@ -553,7 +568,7 @@ upper_bounds = list(lambda = 10000,
 
 
 fixed_terms <- NULL
-bootstrap_samples <- 1000
+bootstrap_samples <- 0
 
 any(is.na(mis_species))
 any(is.na(covariates))
@@ -571,14 +586,15 @@ fit_multi_cov.juntas <- cxr_pm_multifit(data = mis_species_junto,
                                  upper_bounds = upper_bounds,
                                  fixed_terms = fixed_terms,
                                  bootstrap_samples = bootstrap_samples) #error: check the data, initial values and bounds
-#                                   parameter fitting failed for all focal species
+#                                   parameter fitting failed for all focal species. 
+#       I modify the initial data and the error continues, 
 
-summary(fit_multi_cov)
+#summary(fit_multi_cov)
 
 #modelo general intrainter----
-initial_values_intrainter = list(lambda = lambda_intrainter,
-                             alpha_intra = mean.alpha.intra.interintra,
-                             alpha_inter = mean.alpha.inter.interintra,
+initial_values_intrainter = list(lambda = mean(lambda_intrainter),
+                             alpha_intra = mean(mean.alpha.intra.interintra),
+                             alpha_inter = mean(mean.alpha.inter.interintra),
                              lambda_cov = lambda_cov_intrainter,
                              alpha_cov = c(alpha_cov_sal_interintra,alpha_cov_herb_interintra, alpha_cov_fv_interintra))
 
@@ -594,4 +610,4 @@ fit_multi_cov.intrainter <- cxr_pm_multifit(data = mis_species_intra_inter,
                                         lower_bounds = lower_bounds,
                                         upper_bounds = upper_bounds,
                                         fixed_terms = fixed_terms,
-                                        bootstrap_samples = bootstrap_samples)
+                                        bootstrap_samples = bootstrap_samples) #error. el modelo no fitea
