@@ -6,17 +6,17 @@ library(ggplot2)
 
 #load the data
 #2020
-fv.20 <- read_csv2("data/pollinator_2020.csv")
-h.20 <-read.table(file = "data/foodweb_2020.csv", header = TRUE, sep = ";")
-comp.20 <- read_csv2("data/competition_2020.csv")
-salt.20 <- read_csv2("data/Salinity_moisture_2020.csv")
+fv.20 <- read_csv2("data/raw_data/pollinator_2020.csv")
+h.20 <-read.table(file = "data/raw_data/foodweb_2020.csv", header = TRUE, sep = ";")
+comp.20 <- read_csv2("data/raw_data/competition_2020.csv")
+salt.20 <- read_csv2("data/raw_data/Salinity_moisture_2020.csv")
 #2019
-fv<-read.table(file = "data/pollinator_2016_2019.csv", header = TRUE, sep = ";")# i need to keep only 2019
-h.19<-read.table(file = "data/foodweb_2019.csv", header = TRUE, sep = ";")
-comp.19<-read.table(file = "data/competition_2019.csv", header = TRUE, sep = ";")
-salt.19 <- read.table(file = "data/Salinity_moisture_2019.csv", header = TRUE, sep = ";")
+fv<-read.table(file = "data/raw_data/pollinator_2016_2019.csv", header = TRUE, sep = ";")# i need to keep only 2019
+h.19<-read.table(file = "data/raw_data/foodweb_2019.csv", header = TRUE, sep = ";")
+comp.19<-read.table(file = "data/raw_data/competition_2019.csv", header = TRUE, sep = ";")
+salt.19 <- read.table(file = "data/raw_data/Salinity_moisture_2019.csv", header = TRUE, sep = ";")
 #position plots
-position <- read.table(file="data/caracolesplotposition.csv", header= TRUE, sep=";")
+position <- read.table(file="data/raw_data/caracolesplotposition.csv", header= TRUE, sep=";")
 position <- na.omit(position)
 position$Plot <- position$plot
 position$Subplot <- position$position
@@ -124,6 +124,7 @@ ggplot(data=h.19.group.1, aes(x= Plant_Simple, y=herb, fill= Group)) +
     NULL
 #salt ----
 #2020
+salt.20$Salinity <- as.numeric(salt.20$Salinity)
 sal.20.simple <- salt.20 %>% group_by(Plot, Subplot) %>% summarise(sal = sum(Salinity))%>%
     ungroup()
 any(is.na(sal.20.simple))
@@ -135,6 +136,7 @@ sal.prueba2[141,3]<-0.0894
 sal.prueba2[187,3]<-0.1069
 sal.prueba2[322,3]<- 0.122
 any(is.na(sal.prueba2))
+max(sal.prueba2$sal)
 #2019
 str(salt.19) #There are a lot of Nas in the salinity, so I'm going to calculate the average per Plot
 nas <- salt.19
@@ -149,6 +151,7 @@ s <- nas %>% group_by(Plot) %>% summarise(sal = mean(Salinity ))%>%
 sal.19.simple <- salt.19 %>% group_by(Plot, Subplot) %>% summarise(sal = sum(Salinity_mean))%>%
     ungroup()
 which(is.na(sal.19.simple$sal))#ya tengo la base de datos sin NAs
+max(sal.19.simple$sal)
 #competition ----
 #el fitness tiene que ser numero de semillas en 1 fruto o numero de semillas por indv?----
 #creo que lo correcto es numero de frutos por semillas que hay dentro de 1 fruto.
@@ -163,17 +166,19 @@ comp.20.1.join <- comp.20.1[,c("Plot", "Subplot", "focal", "fitness", "BEMA","CH
 comp.20.1<- comp.20.1[,c("focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
            ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
 
-#comp.20.1$check1 <- rowSums(comp.20.1[,3:24])
-#min(comp.20.1$check1) #hay filas enteras con 0 vecinos. Hya que eliminarlos. 
-#comp.20.1 <- comp.20.1 %>% filter(check1!= "0")
-#comp.20.1 <- comp.20.1[,c("focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
- #            ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
+comp.20.1$check1 <- rowSums(comp.20.1[,3:24])
+min(comp.20.1$check1) #hay filas enteras con 0 vecinos. Hya que eliminarlos. ya que el modelo no funciona sino
+#comp.20.final <- comp.20.1 %>% filter(check1!= "0")
+comp.20.final <- subset(comp.20.1, check1>=1)
+comp.20.final <- comp.20.final[,c("focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
+             ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
 
-#comp.20.1.join$check1 <- rowSums(comp.20.1.join[,5:26])
-#min(comp.20.1.join$check1) #hay filas enteras con 0 vecinos. Hya que eliminarlos. 
+comp.20.1.join$check1 <- rowSums(comp.20.1.join[,5:26])
+min(comp.20.1.join$check1) #hay filas enteras con 0 vecinos. Hya que eliminarlos. 
 #comp.20.1.join <- comp.20.1.join %>% filter(check1!= "0")
-#comp.20.1.join <- comp.20.1.join[,c("Plot","Subplot","focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
- #                         ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
+comp.20.final.junto <- subset(comp.20.1.join, check1>=1)
+comp.20.final.junto <- comp.20.final.junto[,c("Plot","Subplot","focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
+                         ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
 
 
 #position$plot <- position$Plot
@@ -187,51 +192,54 @@ comp.19.1.join <- comp.19.1[,c("plot", "subplot" ,"focal", "fitness", "BEMA","CH
              ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
 comp.19.1 <- comp.19.1[,c("focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
            ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
-#comp.19.1$check1 <- rowSums(comp.19.1[,3:24]) #hay filas con 0 vecinos, hay que eliminarlos
-#min(comp.19.1$check1)
-#comp.19.1 <- comp.19.1 %>% filter(check1!= "0")
-#comp.19.1 <- comp.19.1[,c("focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
- #                         ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
+comp.19.1$check1 <- rowSums(comp.19.1[,3:24]) #hay filas con 0 vecinos, hay que eliminarlos
+min(comp.19.1$check1)
+#comp.19.final <- comp.19.1 %>% filter(check1!= "0")
+comp.19.final <- subset(comp.19.1, check1>=1)
+comp.19.final <- comp.19.final[,c("focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
+                          ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
 
-#comp.19.1.join$check1 <- rowSums(comp.19.1.join[,5:26]) #hay filas con 0 vecinos, hay que eliminarlos
-#min(comp.19.1.join$check1)
+comp.19.1.join$check1 <- rowSums(comp.19.1.join[,5:26]) #hay filas con 0 vecinos, hay que eliminarlos
+min(comp.19.1.join$check1)
 #comp.19.1.join <- comp.19.1.join %>% filter(check1!= "0")
-#comp.19.1.join <- comp.19.1.join[,c("plot", "subplot","focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
- #                         ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
+comp.19.final.junto <- subset(comp.19.1.join, check1>=1)
+comp.19.final.junto <- comp.19.final.junto[,c("plot", "subplot","focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
+                     ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
 
 
 #join the competition data
-c.20 <- colnames(comp.20.1)
-c.19 <- colnames(comp.19.1)
+c.20 <- colnames(comp.20.final)
+c.19 <- colnames(comp.19.final)
 common_names <- intersect(c.20, c.19)
-total_comp <- rbind(comp.20.1[common_names], comp.19.1[common_names])
-#ghj<- rowSums(total_comp [,2:23])
-#min(ghj)
-c.20.1 <- colnames(comp.20.1.join)
-comp.20.1.join$plot <- comp.20.1.join$Plot
-comp.20.1.join$subplot <- comp.20.1.join$Subplot
-c.20.1 <- colnames(comp.20.1.join)
-c.19.1 <- colnames(comp.19.1.join)
+total_comp.final <- rbind(comp.20.final[common_names], comp.19.final[common_names])
+ghj<- rowSums(total_comp.final [,3:24]) #comprobacion de que no haya 0 vecinos para una focal
+min(ghj)
+c.20.1 <- colnames(comp.20.final.junto)
+comp.20.final.junto$plot <- comp.20.final.junto$Plot
+comp.20.final.junto$subplot <- comp.20.final.junto$Subplot
+c.20.1 <- colnames(comp.20.final.junto)
+c.19.1 <- colnames(comp.19.final.junto)
 common_names1 <- intersect(c.20.1, c.19.1)
 
 
-total_comp_withplots <- rbind(comp.20.1.join[common_names1], comp.19.1.join[common_names1])
+total_comp_withplots.final <- rbind(comp.20.final.junto[common_names1], comp.19.final.junto[common_names1])
 
-
-#write.csv2(total_comp, file ="C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/total_comp_19_20.check.csv", row.names = FALSE)
-#write.csv2(total_comp_withplots, file ="C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/total_comp_19_20_withplot_subplot.csv", row.names = FALSE)
+ghj1<- rowSums(total_comp_withplots.final [,3:24])
+min(ghj1)
+#write.csv2(total_comp.final, file ="C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/total_comp_19_20.final.csv", row.names = FALSE)
+#write.csv2(total_comp_withplots.final, file ="C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/total_comp_19_20_withplot_subplot.final.csv", row.names = FALSE)
 
 
 #exploratory analyses
 #competencia: filtrar por especies. una vez lo tenga hecho por especies tengo que sumar los vecinos intra+ inter
 #y plotear numero de vecinos segun el fitness
-comp.20.junto <- gather(comp.20.1.join,"BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
+comp.20.junto <- gather(comp.20.final.junto,"BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
                         ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE",
                         key = "Plant", value ="abundance" )
 comp.20.junto <- comp.20.junto %>% filter(focal!= "RAPE", focal!="MEPO", focal!="COSQ" , focal!= "SUSP", 
                                           focal!= "SUSP", focal!="FRPU")
 
-comp.19.junto <- gather(comp.19.1.join,"BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
+comp.19.junto <- gather(comp.19.final.junto,"BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
                         ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE",
                         key = "Plant", value ="abundance" )
 comp.19.junto <- comp.19.junto %>% filter(focal!= "RAPE", focal!="MEPO", focal!="COSQ" , focal!= "SUSP", 
@@ -284,10 +292,10 @@ ggplot(neigh.20, aes(x = neigh, y = log(fitness), group = focal))+
     NULL
 #join all the data ----
 #2020
-comp.20.1.join$Plant_simple <- comp.20.1.join$focal
+comp.20.final.junto$Plant_simple <- comp.20.final.junto$focal
 agroup.h.20 <- h.20.group %>% group_by(Plot, Subplot, Plant_simple) %>% summarise (herb1 = sum(herb))%>%
     ungroup()
-h.20.comp <- left_join(comp.20.1.join, agroup.h.20)
+h.20.comp <- left_join(comp.20.final.junto, agroup.h.20)
 
 s.herb <- h.20.comp[,c("Plot", "Subplot", "herb1", "Plant_simple")]
 s.herb$Plant <- s.herb$Plant_simple
@@ -306,10 +314,10 @@ agrup.h.19 <- h.19.group.1 %>% group_by(Plot, Subplot, Plant_Simple) %>% summari
     ungroup()
 agrup.fv.19 <- fv.19 %>% group_by(Plot, Subplot, Plant) %>% summarise (fv1 = sum(fv))%>%
     ungroup()
-comp.19.1.join$Plot <- comp.19.1.join$plot
-comp.19.1.join$Subplot <- comp.19.1.join$subplot
-comp.19.1.join$Plant_Simple <- comp.19.1.join$focal
-h.19.comp <- left_join(comp.19.1.join, agrup.h.19)
+comp.19.final.junto$Plot <- comp.19.final.junto$plot
+comp.19.final.junto$Subplot <- comp.19.final.junto$subplot
+comp.19.final.junto$Plant_Simple <- comp.19.final.junto$focal
+h.19.comp <- left_join(comp.19.final.junto, agrup.h.19)
 s.herb.19 <- h.19.comp[,c("Plot", "Subplot", "herb1", "Plant_Simple")]
 s.herb.19$Plant <- s.herb.19$Plant_Simple
 s.herb.19$herb1 <- as.numeric(s.herb.19$herb1)
@@ -330,5 +338,7 @@ total <- rbind(cov.clean.20,cov.clean.19)
 #final data of competition and covariates. Save them and reload them in the next script.
 
 
-#write.csv2(total, file ="C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/covariates_salt_h_fv_20_19.csv", row.names = FALSE)
+write.csv2(total, file ="C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/covariates_salt_h_fv_20_19.f.csv",
+           row.names = FALSE)
 
+save(total, file = "cov_total.Rda")
