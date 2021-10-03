@@ -166,19 +166,19 @@ comp.20.1.join <- comp.20.1[,c("Plot", "Subplot", "focal", "fitness", "BEMA","CH
 comp.20.1<- comp.20.1[,c("focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
            ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
 
-comp.20.1$check1 <- rowSums(comp.20.1[,3:24])
-min(comp.20.1$check1) #hay filas enteras con 0 vecinos. Hya que eliminarlos. ya que el modelo no funciona sino
+#comp.20.1$check1 <- rowSums(comp.20.1[,3:24])
+#min(comp.20.1$check1) #hay filas enteras con 0 vecinos. Hya que eliminarlos. ya que el modelo no funciona sino
 #comp.20.final <- comp.20.1 %>% filter(check1!= "0")
-comp.20.final <- subset(comp.20.1, check1>=1)
-comp.20.final <- comp.20.final[,c("focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
-             ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
+#comp.20.final <- subset(comp.20.1, check1>=1)
+#comp.20.final <- comp.20.final[,c("focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
+ #            ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
 
-comp.20.1.join$check1 <- rowSums(comp.20.1.join[,5:26])
-min(comp.20.1.join$check1) #hay filas enteras con 0 vecinos. Hya que eliminarlos. 
+#comp.20.1.join$check1 <- rowSums(comp.20.1.join[,5:26])
+#min(comp.20.1.join$check1) #hay filas enteras con 0 vecinos. Hya que eliminarlos. 
 #comp.20.1.join <- comp.20.1.join %>% filter(check1!= "0")
-comp.20.final.junto <- subset(comp.20.1.join, check1>=1)
-comp.20.final.junto <- comp.20.final.junto[,c("Plot","Subplot","focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
-                         ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
+#comp.20.final.junto <- subset(comp.20.1.join, check1>=1)
+#comp.20.final.junto <- comp.20.final.junto[,c("Plot","Subplot","focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
+ #                        ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
 
 
 #position$plot <- position$Plot
@@ -192,42 +192,42 @@ comp.19.1.join <- comp.19.1[,c("plot", "subplot" ,"focal", "fitness", "BEMA","CH
              ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
 comp.19.1 <- comp.19.1[,c("focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
            ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
-comp.19.1$check1 <- rowSums(comp.19.1[,3:24]) #hay filas con 0 vecinos, hay que eliminarlos
-min(comp.19.1$check1)
+#comp.19.1$check1 <- rowSums(comp.19.1[,3:24]) #hay filas con 0 vecinos, hay que eliminarlos#
+#min(comp.19.1$check1)
 #comp.19.final <- comp.19.1 %>% filter(check1!= "0")
-comp.19.final <- subset(comp.19.1, check1>=1)
-comp.19.final <- comp.19.final[,c("focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
-                          ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
+#comp.19.final <- subset(comp.19.1, check1>=1)
+#comp.19.final <- comp.19.final[,c("focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
+ #                         ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
 
-comp.19.1.join$check1 <- rowSums(comp.19.1.join[,5:26]) #hay filas con 0 vecinos, hay que eliminarlos
-min(comp.19.1.join$check1)
+#comp.19.1.join$check1 <- rowSums(comp.19.1.join[,5:26]) #hay filas con 0 vecinos, hay que eliminarlos
+#min(comp.19.1.join$check1)
 #comp.19.1.join <- comp.19.1.join %>% filter(check1!= "0")
-comp.19.final.junto <- subset(comp.19.1.join, check1>=1)
-comp.19.final.junto <- comp.19.final.junto[,c("plot", "subplot","focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
-                     ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
+#comp.19.final.junto <- subset(comp.19.1.join, check1>=1)
+#comp.19.final.junto <- comp.19.final.junto[,c("plot", "subplot","focal", "fitness", "BEMA","CHFU","CHMI","CETE","HOMA","LEMA","PAIN", "PLCO","POMA","POMO", "PUPA","SASO","SCLA"
+ #                    ,"SPRU","MESU","MEEL","MEPO","SOAS", "FRPU", "SUSP","COSQ", "RAPE")]
 
 
 #join the competition data
-c.20 <- colnames(comp.20.final)
-c.19 <- colnames(comp.19.final)
+c.20 <- colnames(comp.20.1)
+c.19 <- colnames(comp.19.1)
 common_names <- intersect(c.20, c.19)
-total_comp.final <- rbind(comp.20.final[common_names], comp.19.final[common_names])
+total_comp.final <- rbind(comp.20.1[common_names], comp.19.1[common_names])
 ghj<- rowSums(total_comp.final [,3:24]) #comprobacion de que no haya 0 vecinos para una focal
 min(ghj)
-c.20.1 <- colnames(comp.20.final.junto)
-comp.20.final.junto$plot <- comp.20.final.junto$Plot
-comp.20.final.junto$subplot <- comp.20.final.junto$Subplot
-c.20.1 <- colnames(comp.20.final.junto)
-c.19.1 <- colnames(comp.19.final.junto)
+c.20.1 <- colnames(comp.20.1.join)
+comp.20.1.join$plot <- comp.20.1.join$Plot
+comp.20.1.join$subplot <- comp.20.1.join$Subplot
+c.20.1 <- colnames(comp.20.1.join)
+c.19.1 <- colnames(comp.19.1.join)
 common_names1 <- intersect(c.20.1, c.19.1)
 
 
-total_comp_withplots.final <- rbind(comp.20.final.junto[common_names1], comp.19.final.junto[common_names1])
+total_comp_withplots.final <- rbind(comp.20.1.join[common_names1], comp.19.1.join[common_names1])
 
 ghj1<- rowSums(total_comp_withplots.final [,3:24])
 min(ghj1)
-#write.csv2(total_comp.final, file ="C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/total_comp_19_20.final.csv", row.names = FALSE)
-#write.csv2(total_comp_withplots.final, file ="C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/total_comp_19_20_withplot_subplot.final.csv", row.names = FALSE)
+#write.csv2(total_comp.final, file ="C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/total_comp_19_20.conceros.csv", row.names = FALSE)
+#write.csv2(total_comp_withplots.final, file ="C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/total_comp_19_20_withplot_subplot.final.conceros.csv", row.names = FALSE)
 
 
 #exploratory analyses
