@@ -1,8 +1,12 @@
-pairwise_alphas <- alpha_matrix[1:14,1:14]
+load("C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/data/pairwise_alpha_matrix.Rda")
+alpha_matrix<- sp_alpha_matrix.subset
+comp<-read.csv("data/total_comp_19_20.check.csv", header=T, sep=";")
 
-species<- c("LEMA","BEMA","HOMA","SOAS","CHFU","SCLA","SPRU","POMA","POMO","PAIN","CETE","PLCO","PUPA","MESU")
+pairwise_alphas <- alpha_matrix[1:9,1:9]
 
-niche_diff<- matrix(NA, nrow= 14, ncol=14)
+species<- c("LEMA","HOMA","SOAS","CHFU","SCLA","SPRU","POMA","POMO","MESU")
+
+niche_diff<- matrix(NA, nrow= 9, ncol=9)
 
 rownames(niche_diff)<-species
 
@@ -10,9 +14,9 @@ colnames(niche_diff)<-species
 
 
 
-for( i in 1:14){
+for( i in 1:9){
     
-    for(j in 1:14){
+    for(j in 1:9){
         
         
         
@@ -31,14 +35,23 @@ for( i in 1:14){
 #First compute demographic differences
 
 
+effects_all <- comp %>% group_by(focal)%>% summarise(fit = mean(fitness)) #effects_all lo he entendido como el fitness total
+effects_all1 <- subset(effects_all, focal == c("LEMA","HOMA","SOAS","CHFU","SCLA","SPRU","POMA","POMO","MESU"))
 
-fitness <- as.vector(effects_all[1:14,1])
+
+effects_all <- effects_all%>% filter(focal != "ACHI", focal != "ANAR", focal != "BEMA", focal != "CETE", focal!= "PAIN",focal != "PLCO",
+                     focal != "PUPA" )
+    
+
+
+fitness <- as.vector(effects_all[1:9,2])
 
 
 
-fitness2<-replicate(14, fitness)
+fitness2<-replicate(9, fitness)
+fitness2 <- do.call("rbind", fitness2)
 
-dem_diff<- matrix(NA, nrow=14, ncol=14)
+dem_diff<- matrix(NA, nrow=9, ncol=9)
 
 rownames(dem_diff)<-species
 
@@ -46,9 +59,9 @@ colnames(dem_diff)<-species
 
 
 
-for( i in 1:14){
+for( i in 1:9){
     
-    for(j in 1:14){
+    for(j in 1:9){
         
         
         
@@ -66,7 +79,7 @@ for( i in 1:14){
 
 
 
-comp_res_diff<- matrix(NA, nrow= 14, ncol=14)
+comp_res_diff<- matrix(NA, nrow= 9, ncol=9)
 
 rownames(comp_res_diff)<-species
 
@@ -74,9 +87,9 @@ colnames(comp_res_diff)<-species
 
 
 
-for( i in 1:14){
+for( i in 1:9){
     
-    for(j in 1:14){
+    for(j in 1:9){
         
         
         
@@ -132,7 +145,7 @@ text(x=0.8,y=0.2, "Coexistence", font=3)
 
 ## build a matrix of interactions 
 
-pairwise_alphas_pol <- matrix(0, nrow=14,ncol=14)
+pairwise_alphas_pol <- matrix(0, nrow=9,ncol=9)
 
 row.names(pairwise_alphas_pol)<- species
 
@@ -140,7 +153,7 @@ colnames(pairwise_alphas_pol)<- species
 
 alpha_matrix <-as.matrix(alpha_matrix)
 
-effects_all <-as.matrix(effects_all[1:14,1:14])
+effects_all <-as.matrix(effects_all[1:14,1:14]) #aqui me pierdo
 
 pairwise_alphas_pol[1,]<-alpha_matrix[1,1:14] + effects_all[1,5]
 
