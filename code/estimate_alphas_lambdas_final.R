@@ -7,7 +7,7 @@ comp<-read.csv("data/total_comp_19_20.check.csv", header=T, sep=";")
 #env<-read.csv("covariates_salt_h_fv_20_19.csv", header=T, sep=";")
 all.sp<-unique(comp$focal)
 all.sp<-all.sp[-c(15:16)]
-load("C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/cov_total.Rda")
+load("data/cov_total.Rda")
 env <- total
 
 #first is to create a list per species. 
