@@ -251,6 +251,7 @@ for(i in 1:length(all.sp5)){
     inter <- sp_matrix[sp,which(colnames(sp_matrix)!=sp)]
     inter <-mean(inter[,1])
     intra <- sp_matrix[sp,sp]
+
     
     fit <- cxr_pm_multifit(data = obs,
                            focal_column = sp,
@@ -261,7 +262,7 @@ for(i in 1:length(all.sp5)){
                            lambda_cov_form = "global", # effect of covariates over lambda
                            alpha_cov_form = "global", # effect of covariates over alpha
                            initial_values = list(lambda = lambda, alpha_intra =intra, alpha_inter = inter,
-                                                 lambda_cov = 0, alpha_cov = 0),
+                                                 lambda_cov = 1, alpha_cov = 1),
                            lower_bounds = lower_bounds,
                            upper_bounds = upper_bounds,
                            bootstrap_samples = 0)
@@ -294,6 +295,27 @@ for(i in 1:length(all.sp5)){
     inter <- sp_matrix[sp,which(colnames(sp_matrix)!=sp)]
     inter <-mean(inter[,1])
     intra <- sp_matrix[sp,sp]
+    lower_bounds <- if(unique(env_list[[1]]$fv1==0)==TRUE){list(lambda = 10,
+                                                                alpha_intra = 0.001,
+                                                                alpha_inter = 0.001,
+                                                                lambda_cov = 0.000001,
+                                                                alpha_cov = 0.000001)}else{
+      list(lambda = 10, alpha_intra = 0.001,alpha_inter = 0.001, lambda_cov = -4, alpha_cov = -4)}
+    
+    upper_bounds <- if(unique(env_list[[1]]$fv1==0)==TRUE){list(lambda = 4000,
+                                                                alpha_intra = 10,
+                                                                alpha_inter = 10,
+                                                                lambda_cov = 0.000002,
+                                                                alpha_cov = 0.000002)}else{
+      list(lambda = 4000, alpha_intra = 10,alpha_inter = 10, lambda_cov = 4, alpha_cov = 4)}
+    
+    initial_values <- if(unique(env_list[[1]]$fv1==0)==TRUE){list(lambda = lambda,
+                                                                alpha_intra = intra,
+                                                                alpha_inter = inter,
+                                                                lambda_cov = 0.000001,
+                                                                alpha_cov = 0.000001)}else{
+                                                                  list(lambda = lambda, alpha_intra = intra,alpha_inter = inter, lambda_cov = 1, alpha_cov = 1)}
+    
     
     fit <- cxr_pm_multifit(data = obs,
                            focal_column = sp,
@@ -303,8 +325,7 @@ for(i in 1:length(all.sp5)){
                            alpha_form = "pairwise",
                            lambda_cov_form = "global", # effect of covariates over lambda
                            alpha_cov_form = "global", # effect of covariates over alpha
-                           initial_values = list(lambda = lambda, alpha_intra =intra, alpha_inter = inter,
-                                                 lambda_cov = 0, alpha_cov = 0),
+                           initial_values = initial_values,
                            lower_bounds = lower_bounds,
                            upper_bounds = upper_bounds,
                            bootstrap_samples = 0)
@@ -339,6 +360,81 @@ names(env_total)<-all.sp5
 
 
 obs6 <- obs_total
+
+fit6<-list()
+for (i in 1:length(all.sp5)){
+  obs<-obs6[i]
+  sp <- all.sp5[i]
+  env_list <- env_total[i]
+  lambda <- mean(fit5_salinity[[i]]$lambda, fit5_herb[[i]]$lambda, fit5_pol[[i]]$lambda)
+  inter <-mean(mean(fit5_salinity[[i]]$alpha_matrix), mean(fit5_herb[[i]]$alpha_matrix), mean(fit5_pol[[i]]$alpha_matrix))
+  intra <- mean(fit5_salinity[[i]]$alpha_matrix[,sp], fit5_herb[[i]]$alpha_matrix[,sp], fit5_pol[[i]]$alpha_matrix[,sp])
+  
+  lambda_cov<-c(if(is.null(fit5_salinity[[i]]$lambda_cov)==TRUE){1}else{fit5_salinity[[i]]$lambda_cov},
+                if(is.null(fit5_herb[[i]]$lambda_cov)==TRUE){1}else{fit5_herb[[i]]$lambda_cov},
+                if(is.null(fit5_pol[[i]]$lambda_cov)==TRUE){1}else{fit5_pol[[i]]$lambda_cov})
+  alpha_cov <-c(if(is.na(mean(fit5_salinity[[i]]$alpha_cov$sal))==TRUE){1}else{mean(fit5_salinity[[i]]$alpha_cov$sal)},
+                if(is.na(mean(fit5_herb[[i]]$alpha_cov$herb1))==TRUE){1}else{mean(fit5_herb[[i]]$alpha_cov$herb1)},
+                if(is.na(mean(fit5_pol[[i]]$alpha_cov$fv1))==TRUE){1}else{mean(fit5_pol[[i]]$alpha_cov$fv1)})
+  lambda_cov<-if(any(lambda_cov<0)==TRUE){c(1,1,1)}else{lambda_cov}
+  alpha_cov <-if(any(alpha_cov<0)==TRUE){c(1,1,1)}else{alpha_cov}
+  
+  lower_bounds <- if(unique(env_list[[1]]$fv1==0)==TRUE){list(lambda = 10,
+                                                              alpha_intra = 0.001,
+                                                              alpha_inter = 0.001,
+                                                              lambda_cov = c(-4, -4, 0.000001), alpha_cov = c(-4, -4, 0.000001))
+  }else {list(lambda = 10, alpha_intra = 0.001,alpha_inter = 0.001, lambda_cov =c(-4, -4, -4), alpha_cov = c(-4, -4, -4))}
+
+  upper_bounds <- if(unique(env_list[[1]]$fv1==0)==TRUE){list(lambda = 4000,
+                                                              alpha_intra = 10,
+                                                              alpha_inter = 10,
+                                                              lambda_cov = c(4, 4, 0.000002), alpha_cov = c(4, 4, 0.000002))
+  }else {list(lambda = 4000, alpha_intra = 10,alpha_inter = 10, lambda_cov =c(4, 4, 4), alpha_cov = c(4, 4, 4))}
+  
+  initial_values <- if(unique(env_list[[1]]$fv1==0)==TRUE){list(lambda = lambda,
+                                                                alpha_intra = intra,
+                                                                alpha_inter = inter,
+                                                                lambda_cov = 0.000001,
+                                                                alpha_cov = 0.000001)}else{
+                                                                  list(lambda = lambda, alpha_intra = intra,alpha_inter = inter, lambda_cov = lambda_cov, alpha_cov = alpha_cov)}
+  
+  fit <- cxr_pm_multifit(data = obs,
+                         focal_column = sp,
+                         model_family = "BH",
+                         covariates = env_list,
+                         optimization_method = "bobyqa",
+                         alpha_form = "pairwise",
+                         lambda_cov_form = "global", # effect of covariates over lambda
+                         alpha_cov_form = "global", # effect of covariates over alpha
+                         initial_values = initial_values,
+                         lower_bounds = lower_bounds,
+                         upper_bounds = upper_bounds,
+                         bootstrap_samples = 0)
+  
+     fit6[[i]]<- fit
+  
+}
+
+names(fit6)<-all.sp5
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 fit6<-list()

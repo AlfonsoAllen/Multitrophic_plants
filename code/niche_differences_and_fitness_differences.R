@@ -36,11 +36,7 @@ for( i in 1:9){
     
 }
 
-
-
 #fitness differences are a multiplicative interaction between demographic differences and competitive response differences
-
-
 
 #First compute demographic differences
 
@@ -122,8 +118,6 @@ fitness_diff<- comp_res_diff * dem_diff
 
 ## Values lower than 1 for fitness differences need to be removed
 
-
-
 fitness_diff[fitness_diff<1]<-NA
 
 # Ok, once calculated niche and fitness differences, plot them, 
@@ -136,7 +130,7 @@ diag(fitness_diff)=NA
 
 
 
-plot(niche_diff, log(fitness_diff), pch=1, lwd=2, xlab="Niche differences", ylab="Fitness differences (Log. Transformed)", main= "a) Floral Visitors", ylim=c(0,10), xlim=c(0,1))
+plot(niche_diff, log(fitness_diff), pch=1, lwd=2, xlab="Niche differences", ylab="Fitness differences (Log. Transformed)", main= "a) Floral Visitors", ylim=c(-5,10), xlim=c(-60,1))
 
 curve(log(1/(1-x)), add=T, col="red", lwd=3)
 
@@ -154,15 +148,25 @@ text(x=0.8,y=0.2, "Coexistence", font=3)
 
 ## build a matrix of interactions 
 
-pairwise_alphas_pol <- matrix(0, nrow=9,ncol=9)
+alphas_pol <- matrix(0, nrow=9,ncol=9)
+row.names(alphas_pol)<- species
+colnames(alphas_pol)<- species
 
-row.names(pairwise_alphas_pol)<- species
-
-colnames(pairwise_alphas_pol)<- species
+for (i in 1:length((alpha_cov$pol))){ #this loop is to create a matrix with the effect of pol on changing per capita interactions
+    alphas_pol[i,1:9]<-alpha_cov$pol[i]
+}
 
 alpha_matrix <-as.matrix(alpha_matrix)
 
-#effects_all <-as.matrix(effects_all[1:14,1:14]) #aqui me pierdo
+alpha_matrix_pol <- list()
+
+for (i in 1: max(total$fv1)){
+    alpha_matrix_pol[[i]]<- alpha_matrix + alphas_pol * i
+} #this is to create the 21 matrices 
+     
+
+
+
 
 pairwise_alphas_pol[1,]<-alpha_matrix[1,1:9] + alpha_cov[1,3]
 
