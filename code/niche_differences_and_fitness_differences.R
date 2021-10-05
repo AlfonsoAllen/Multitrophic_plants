@@ -223,12 +223,45 @@ for (k in 1:length(alpha_matrix_pol)){
 }
 
 #now that we have the effect of polinators from 1 to 21 abundances (min and max), let see how the landscape changes
-#select a species pair for an example 
-sp<- c("LEMA", "SPRU")
+#select a species pair for an example for instance LEMA SPRU
+
 example_niche<- list()
-for (i in 1:length(fitness_diff_pol)){
-    example_niche[[i]] <- 
+for (i in 1:length(niche_diff_pol)){
+    example_niche[[i]] <- niche_diff_pol[[i]]["LEMA", "SPRU"] 
 }
+example_niche <- unlist(example_niche)
+
+example_fitness<- list()
+for (i in 1:length(fitness_diff_pol)){
+    example_fitness[[i]] <- fitness_diff_pol[[i]]["LEMA", "SPRU"] 
+}
+example_fitness <- unlist(example_fitness)
+
+
+#according to the data we see that pollinator in this case change competitive outcomes from one species to the another
+#it can be better seen in this graph
+boun_df<-data.frame(niche_overlap=c(seq(0,2, 0.05))) # creating a vector with niche overlap
+boun_df$niche_diff<-(1-boun_df$niche_overlap) # calculating stabilizating differences from niche overlap 1-rho
+boun_df$fitness_differences_sp_1<-(1/boun_df$niche_overlap) # solid line in your graph this is ok
+boun_df$fitness_differences_sp_temp<- 1-boun_df$fitness_differences_sp_1 #this is an intermediate step to see the differences above one 
+#which is later incorporated into the 2 species
+boun_df$fitness_differences_sp_2<- 1+ boun_df$fitness_differences_sp_temp
+boun_df<-boun_df[, -4]
+#remove the intermediate step 
+plot(example_niche, log(example_fitness), xlim=c(-0.5, 0.5), pch=1, lwd=2, xlab="Niche differences", ylab="Fitness differences (Log. Transformed)", main= "A) Floral Visitors")
+
+points(boun_df$niche_diff, boun_df$fitness_differences_sp_1)
+lines(boun_df$niche_diff, boun_df$fitness_differences_sp_1, type = "l", lty = 1, col="red")
+lines(boun_df$niche_diff, boun_df$fitness_differences_sp_2, type = "l", lty = 1, col="blue")
+text(x=-0.3, y=1, "Priority effect", cex=.8)
+text(x=0.3, y=1, "Coexistence", cex=.8)
+text(x=0.3, y=2.5, "SPRU excluded", cex=.8)
+text(x=-0.2, y=0.1, "LEMA excluded", cex=.8)
+
+
+#This can be done for other pair of species, the idea now is to look for a generalized measure that allows to capture these effects
+
+
 
 ##Until this point is ok 
 
