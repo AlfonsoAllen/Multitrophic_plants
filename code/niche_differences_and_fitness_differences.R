@@ -164,6 +164,9 @@ for (i in 1: max(total$fv1)){
     alpha_matrix_pol[[i]]<- alpha_matrix + alphas_pol * i
 } #this is to create the 21 matrices 
      
+#now calculate niche differences for each matrix 
+
+
 
 
 
