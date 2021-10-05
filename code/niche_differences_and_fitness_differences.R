@@ -82,8 +82,6 @@ for( i in 1:9){
 
 #Second compute competitive response differences
 
-
-
 comp_res_diff<- matrix(NA, nrow= 9, ncol=9)
 
 rownames(comp_res_diff)<-species
@@ -152,7 +150,7 @@ alphas_pol <- matrix(0, nrow=9,ncol=9)
 row.names(alphas_pol)<- species
 colnames(alphas_pol)<- species
 
-for (i in 1:length((alpha_cov$pol))){ #this loop is to create a matrix with the effect of pol on changing per capita interactions
+for (i in 1:length(alpha_cov$pol)){ #this loop is to create a matrix with the effect of pol on changing per capita interactions
     alphas_pol[i,1:9]<-alpha_cov$pol[i]
 }
 
@@ -165,9 +163,74 @@ for (i in 1: max(total$fv1)){
 } #this is to create the 21 matrices 
      
 #now calculate niche differences for each matrix 
+niche_diff_pol <- list()
+for (k in 1:length(alpha_matrix_pol)){
+    
+    xx<-alpha_matrix_pol[[k]]
+    
+    for( i in 1:9){
+        
+        for(j in 1:9){
+            niche_diff[i,j] <- 1-(sqrt((xx[i,j]*xx[j,i])/(xx[i,i]*xx[j,j])))
+        }
+    }
+    niche_diff_pol[[k]]<-niche_diff
+}
+
+#now fitness differences
+#first the demographic differences
+lambda_pol <- list()
+
+for (i in 1: max(total$fv1)){
+    lambda_pol[[i]]<- lambda + lambda_cov$fv1 * i
+}
+
+demo_diff_pol <- list()
+for (k in 1:length(lambda_pol)){
+    xx<- as.data.frame(lambda_pol[[k]])
+    xx2 <- t(replicate(length(species), xx$lambda))
+    for( i in 1:9){
+        for(j in 1:9){
+            dem_diff[i,j] <- (xx2[i,j]/xx2[j,i])
+        }
+    }
+    
+    demo_diff_pol[[k]]<-dem_diff
+}
 
 
 
+#Second compute competitive response differences
+comp_res_diff_pol <- list()
+for (k in 1:length(alpha_matrix_pol)){
+    
+    xx<-alpha_matrix_pol[[k]]
+    
+    for( i in 1:9){
+        
+        for(j in 1:9){
+            comp_res_diff[i,j] <- sqrt((xx[j,i]*xx[j,j])/(xx[i,i]*xx[i,j]))
+        }
+    }
+    comp_res_diff_pol[[k]]<-comp_res_diff
+}
+
+
+fitness_diff_pol <- list()
+for (k in 1:length(alpha_matrix_pol)){
+
+    fitness_diff_pol[[k]]<- comp_res_diff_pol[[k]] * demo_diff_pol[[k]]
+}
+
+#now that we have the effect of polinators from 1 to 21 abundances (min and max), let see how the landscape changes
+#select a species pair for an example 
+sp<- c("LEMA", "SPRU")
+example_niche<- list()
+for (i in 1:length(fitness_diff_pol)){
+    example_niche[[i]] <- 
+}
+
+##Until this point is ok 
 
 
 
