@@ -1,12 +1,12 @@
-load("C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/data/pairwise_alpha_matrix.Rda")
-load("C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/data/lambda_cov_matrix.Rda")
-load("C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/data/lambdas.Rda")
-load("C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/data/alpha_cov_matrix.Rda")
+load("data/pairwise_alpha_matrix.Rda")
+load("data/lambdas.Rda")
+load("data/lambda_cov_matrix.Rda")
+load("data/alpha_cov_matrix.Rda")
 alpha_matrix<- sp_alpha_matrix.subset
 alpha_cov <- sp_alpha_cov_subset
 lambda <- sp_lambda_.subset
 lambda_cov <- sp_lambda_cov.subset
-load("C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/data/cov_total.Rda")
+load("data/cov_total.Rda")
 env <- total
 
 
@@ -244,6 +244,11 @@ fitness_pol <- as.vector(fitness_pol)
 
 fitness_pol.visits <- list()
 fitness2_pol1 <- list()
+dem_diff_pol<- matrix(NA, nrow= 9, ncol=9)
+
+rownames(dem_diff_pol)<-species
+
+colnames(dem_diff_pol)<-species
 
 
 for (i in 1: length(pol)){
@@ -265,11 +270,7 @@ fitness2_pol1 [[i]] <-replicate(9, fitness_pol.visits [[i]])
 
 }
 
-dem_diff_pol<- matrix(NA, nrow= 9, ncol=9)
 
-rownames(dem_diff_pol)<-species
-
-colnames(dem_diff_pol)<-species
 
 
 
