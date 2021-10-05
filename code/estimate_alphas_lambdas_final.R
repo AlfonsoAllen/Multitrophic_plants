@@ -567,6 +567,7 @@ for(i in 1:length(all.sp5)){
 
 names(fit_global)<-all.sp5
 
+
 #voy a seleccionar las especies que han convergido en el modelo: LEMA, HOMA, SOAS, CHFU, SCLA, SPRU, POMA, POMO, MESU
 
 subset.species.global <- c("LEMA", "HOMA", "SOAS","CHFU", "SCLA","SPRU","POMA","POMO","MESU")
@@ -597,6 +598,7 @@ mesu.lambda.cov <- (as_tibble(fit_global$MESU$lambda_cov))
 sp_lambda_cov.subset <- data.frame (rbind(lema.lambda.cov, homa.lambda.cov, soas.lambda.cov, chfu.lambda.cov, 
                                           scla.lambda.cov, spru.lambda.cov, poma.lambda.cov, pomo.lambda.cov, mesu.lambda.cov))
 rownames(sp_lambda_cov.subset) <- subset.species.global
+#save(sp_lambda_cov.subset, file="data/lambda_cov_matrix.Rda")
 
 lema.lambda<- (as_tibble(fit_global$LEMA$lambda)) 
 homa.lambda <- (as_tibble(fit_global$HOMA$lambda))  
@@ -611,6 +613,7 @@ sp_lambda_.subset <- data.frame (rbind(lema.lambda, homa.lambda, soas.lambda, ch
                                        poma.lambda, pomo.lambda, mesu.lambda))
 rownames(sp_lambda_.subset) <- subset.species.global
 colnames(sp_lambda_.subset)<-"lambda"
+#save(sp_lambda_.subset, file="data/lambdas.Rda")
 
 
 lema.alpha_cov<- c((mean(as.numeric(fit_global$LEMA$alpha_cov$sal))), (mean(as.numeric(fit_global$LEMA$alpha_cov$herb1))),
@@ -636,6 +639,7 @@ sp_alpha_cov_subset <- data.frame (rbind(lema.alpha_cov, homa.alpha_cov, soas.al
                                          poma.alpha_cov, pomo.alpha_cov, mesu.alpha_cov))
 rownames(sp_alpha_cov_subset) <- subset.species.global
 colnames(sp_alpha_cov_subset)<- c("salt", "herb", "pol")
+#save(sp_alpha_cov_subset, file= "data/alpha_cov_matrix.Rda")
 
 x <- d1$neighbours
 sp1 <- c("LEMA", "HOMA", "SOAS","CHFU", "SCLA","SPRU","POMA","POMO","MESU")

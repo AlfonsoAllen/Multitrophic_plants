@@ -1,5 +1,15 @@
 load("C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/data/pairwise_alpha_matrix.Rda")
+load("C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/data/lambda_cov_matrix.Rda")
+load("C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/data/lambdas.Rda")
+load("C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/data/alpha_cov_matrix.Rda")
 alpha_matrix<- sp_alpha_matrix.subset
+alpha_cov <- sp_alpha_cov_subset
+lambda <- sp_lambda_.subset
+lambda_cov <- sp_lambda_cov.subset
+load("C:/Users/maria/Documents/Tesis/R_repositorios/Multitrophic_plants/data/cov_total.Rda")
+env <- total
+
+
 comp<-read.csv("data/total_comp_19_20.check.csv", header=T, sep=";")
 
 pairwise_alphas <- alpha_matrix[1:9,1:9]
@@ -36,7 +46,6 @@ for( i in 1:9){
 
 
 effects_all <- comp %>% group_by(focal)%>% summarise(fit = mean(fitness)) #effects_all lo he entendido como el fitness total
-effects_all1 <- subset(effects_all, focal == c("LEMA","HOMA","SOAS","CHFU","SCLA","SPRU","POMA","POMO","MESU"))
 
 
 effects_all <- effects_all%>% filter(focal != "ACHI", focal != "ANAR", focal != "BEMA", focal != "CETE", focal!= "PAIN",focal != "PLCO",
@@ -153,39 +162,31 @@ colnames(pairwise_alphas_pol)<- species
 
 alpha_matrix <-as.matrix(alpha_matrix)
 
-effects_all <-as.matrix(effects_all[1:14,1:14]) #aqui me pierdo
+#effects_all <-as.matrix(effects_all[1:14,1:14]) #aqui me pierdo
 
-pairwise_alphas_pol[1,]<-alpha_matrix[1,1:14] + effects_all[1,5]
+pairwise_alphas_pol[1,]<-alpha_matrix[1,1:9] + alpha_cov[1,3]
 
-pairwise_alphas_pol[2,]<-alpha_matrix[2,1:14] + effects_all[2,5]
+pairwise_alphas_pol[2,]<-alpha_matrix[2,1:9] + alpha_cov[2,3]
 
-pairwise_alphas_pol[3,]<-alpha_matrix[3,1:14] + effects_all[3,5]
+pairwise_alphas_pol[3,]<-alpha_matrix[3,1:9] + alpha_cov[3,3]
 
-pairwise_alphas_pol[4,]<-alpha_matrix[4,1:14] + effects_all[4,5]
+pairwise_alphas_pol[4,]<-alpha_matrix[4,1:9] + alpha_cov[4,3]
 
-pairwise_alphas_pol[5,]<-alpha_matrix[5,1:14] + effects_all[5,5]
+pairwise_alphas_pol[5,]<-alpha_matrix[5,1:9] + alpha_cov[5,3]
 
-pairwise_alphas_pol[6,]<-alpha_matrix[6,1:14] + effects_all[6,5]
+pairwise_alphas_pol[6,]<-alpha_matrix[6,1:9] + alpha_cov[6,3]
 
-pairwise_alphas_pol[7,]<-alpha_matrix[7,1:14] + effects_all[7,5]
+pairwise_alphas_pol[7,]<-alpha_matrix[7,1:9] + alpha_cov[7,3]
 
-pairwise_alphas_pol[8,]<-alpha_matrix[8,1:14] + effects_all[8,5]
+pairwise_alphas_pol[8,]<-alpha_matrix[8,1:9] + alpha_cov[8,3]
 
-pairwise_alphas_pol[9,]<-alpha_matrix[9,1:14] + effects_all[9,5]
-
-pairwise_alphas_pol[10,]<-alpha_matrix[10,1:14] + effects_all[10,5]
-
-pairwise_alphas_pol[11,]<-alpha_matrix[11,1:14] + effects_all[11,5]
-
-pairwise_alphas_pol[12,]<-alpha_matrix[12,1:14] + effects_all[12,5]
-
-pairwise_alphas_pol[13,]<-alpha_matrix[13,1:14] + effects_all[13,5]
-
-pairwise_alphas_pol[14,]<-alpha_matrix[14,1:14] + effects_all[14,5]
+pairwise_alphas_pol[9,]<-alpha_matrix[9,1:9] + alpha_cov[9,3]
 
 
 
-niche_diff_pol<- matrix(NA, nrow= 14, ncol=14)
+
+
+niche_diff_pol<- matrix(NA, nrow= 9, ncol=9)
 
 rownames(niche_diff_pol)<-species
 
@@ -193,9 +194,9 @@ colnames(niche_diff_pol)<-species
 
 
 
-for( i in 1:14){
+for( i in 1:9){
     
-    for(j in 1:14){
+    for(j in 1:9){
         
         
         
@@ -214,51 +215,57 @@ for( i in 1:14){
 #First compute demographic differences
 
 
-
-fitness_pol <- matrix(0, nrow=14, ncol=1)
+fitness_pol <- matrix(0, nrow=9, ncol=1)
 
 row.names(fitness_pol)<- species
 
 colnames(fitness_pol)<- "lambda"
 
-fitness_pol[1,]<-effects_all[1,1] + effects_all[1,2]
+fitness_pol[1,]<-lambda[1,1] + lambda_cov[1,1]
 
-fitness_pol[2,]<-effects_all[2,1] + effects_all[2,2]
+fitness_pol[2,]<-lambda[2,1] + lambda_cov[2,1]
 
-fitness_pol[3,]<-effects_all[3,1] + effects_all[3,2]
+fitness_pol[3,]<-lambda[3,1] + lambda_cov[3,1]
 
-fitness_pol[4,]<-effects_all[4,1] + effects_all[4,2]
+fitness_pol[4,]<-lambda[4,1] + lambda_cov[4,1]
 
-fitness_pol[5,]<-effects_all[5,1] + effects_all[5,2]
+fitness_pol[5,]<-lambda[5,1] + lambda_cov[5,1]
 
-fitness_pol[6,]<-effects_all[6,1] + effects_all[6,2]
+fitness_pol[6,]<-lambda[6,1] + lambda_cov[6,1]
 
-fitness_pol[7,]<-effects_all[7,1] + effects_all[7,2]
+fitness_pol[7,]<-lambda[7,1] + lambda_cov[7,1]
 
-fitness_pol[8,]<-effects_all[8,1] + effects_all[8,2]
+fitness_pol[8,]<-lambda[8,1] + lambda_cov[8,1]
 
-fitness_pol[9,]<-effects_all[9,1] + effects_all[9,2]
+fitness_pol[9,]<-lambda[9,1] + lambda_cov[9,1]
 
-fitness_pol[10,]<-effects_all[10,1] + effects_all[10,2]
-
-fitness_pol[11,]<-effects_all[11,1] + effects_all[11,2]
-
-fitness_pol[12,]<-effects_all[12,1] + effects_all[12,2]
-
-fitness_pol[13,]<-effects_all[13,1] + effects_all[13,2]
-
-fitness_pol[14,]<-effects_all[14,1] + effects_all[14,2]
-
-
-
-
+pol <- seq(0,21, by=1)
 fitness_pol <- as.vector(fitness_pol)
 
+fitness_pol.visits <- list()
+fitness2_pol1 <- list()
 
 
-fitness2_pol<-replicate(6, fitness_pol)
+for (i in 1: length(pol)){
+num <- pol[i]
+fitness_pol.visits [[i]] <- (fitness_pol * num)
+fitness2_pol1 [[i]] <-replicate(9, fitness_pol.visits [[i]])
 
-dem_diff_pol<- matrix(NA, nrow= 14, ncol=14)
+    for( k in 1:9){
+    
+         for(j in 1:9){
+    
+            
+            dem_diff_pol[[i]][k,j]<- as.matrix((fitness2_pol1[[i]][k,j])/(fitness2_pol1[[i]][j,k]))
+          
+    }
+    
+}
+
+
+}
+
+dem_diff_pol<- matrix(NA, nrow= 9, ncol=9)
 
 rownames(dem_diff_pol)<-species
 
@@ -266,53 +273,33 @@ colnames(dem_diff_pol)<-species
 
 
 
-for( i in 1:14){
-    
-    for(j in 1:14){
-        
-        
-        
-        dem_diff_pol[i,j] <- (fitness2_pol[i,j]/fitness2_pol[j,i])
-        
-    }
-    
-}
-
-
-
-
 
 #Second compute competitive response differences
 
-
-
-comp_res_diff_pol<- matrix(NA, nrow= 14, ncol=14)
+comp_res_diff_pol<- matrix(NA, nrow= 9, ncol=9)
 
 rownames(comp_res_diff_pol)<-species
 
 colnames(comp_res_diff_pol)<-species
 
+comp_res_diff_pol <- list()
 
-
-for( i in 1:14){
+for( i in 1:9){
     
-    for(j in 1:14){
+    for(j in 1:9){
+        for( k in 1:length(pol)){
         
         
-        
-        comp_res_diff_pol[i,j] <- sqrt((pairwise_alphas_pol[j,i]*pairwise_alphas_pol[j,j])/(pairwise_alphas_pol[i,i]*pairwise_alphas_pol[i,j]))
-        
+        comp_res_diff_pol[i,j] <- as.matrix(sqrt((pairwise_alphas_pol[j,i]*pairwise_alphas_pol[j,j]))*k/
+                                                ((pairwise_alphas_pol[i,i]*pairwise_alphas_pol[i,j])*k))
+        }    
     }
     
 }
 
 
 
-
-
 # Multiply demographic differences by competitive response differences to obtain fitness differences
-
-
 
 fitness_diff_pol<- comp_res_diff_pol * dem_diff_pol
 
