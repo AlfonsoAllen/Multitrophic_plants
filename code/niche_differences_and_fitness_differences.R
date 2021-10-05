@@ -1,22 +1,25 @@
-load("data/pairwise_alpha_matrix.Rda")
-load("data/lambdas.Rda")
-load("data/lambda_cov_matrix.Rda")
-load("data/alpha_cov_matrix.Rda")
-alpha_matrix<- sp_alpha_matrix.subset
-alpha_cov <- sp_alpha_cov_subset
-lambda <- sp_lambda_.subset
-lambda_cov <- sp_lambda_cov.subset
+library(tidyverse)
+
+
+load("data/alpha_matrix_final.Rda")
+load("data/lambdas_final.Rda")
+load("data/lambdas_cov_final.Rda")
+load("data/alphas_cov_final.Rda")
+alpha_matrix<- as.matrix(alpha.matrix)
+alpha_cov <- alpha_cov
+lambda <- lambdas
+lambda_cov <- lambdas_cov
 load("data/cov_total.Rda")
 env <- total
 
 
 comp<-read.csv("data/total_comp_19_20.check.csv", header=T, sep=";")
 
-pairwise_alphas <- alpha_matrix[1:9,1:9]
+pairwise_alphas <- alpha_matrix[1:14,1:14]
 
-species<- c("LEMA","HOMA","SOAS","CHFU","SCLA","SPRU","POMA","POMO","MESU")
+species<- colnames(pairwise_alphas)
 
-niche_diff<- matrix(NA, nrow= 9, ncol=9)
+niche_diff<- matrix(NA, nrow= 14, ncol=14)
 
 rownames(niche_diff)<-species
 
@@ -24,9 +27,9 @@ colnames(niche_diff)<-species
 
 
 
-for( i in 1:9){
+for( i in 1:14){
     
-    for(j in 1:9){
+    for(j in 1:14){
         
         
         
@@ -44,19 +47,16 @@ for( i in 1:9){
 effects_all <- comp %>% group_by(focal)%>% summarise(fit = mean(fitness)) #effects_all lo he entendido como el fitness total
 
 
-effects_all <- effects_all%>% filter(focal != "ACHI", focal != "ANAR", focal != "BEMA", focal != "CETE", focal!= "PAIN",focal != "PLCO",
-                     focal != "PUPA" )
+effects_all <- effects_all%>% filter(focal != "ACHI", focal != "ANAR")
     
-
-
-fitness <- as.vector(effects_all[1:9,2])
+fitness <- as.vector(effects_all[1:14,2])
 
 
 
-fitness2<-replicate(9, fitness)
+fitness2<-replicate(14, fitness)
 fitness2 <- do.call("rbind", fitness2)
 
-dem_diff<- matrix(NA, nrow=9, ncol=9)
+dem_diff<- matrix(NA, nrow=14, ncol=14)
 
 rownames(dem_diff)<-species
 
@@ -64,9 +64,9 @@ colnames(dem_diff)<-species
 
 
 
-for( i in 1:9){
+for( i in 1:14){
     
-    for(j in 1:9){
+    for(j in 1:14){
         
         
         
@@ -78,11 +78,9 @@ for( i in 1:9){
 
 
 
-
-
 #Second compute competitive response differences
 
-comp_res_diff<- matrix(NA, nrow= 9, ncol=9)
+comp_res_diff<- matrix(NA, nrow= 14, ncol=14)
 
 rownames(comp_res_diff)<-species
 
@@ -90,9 +88,9 @@ colnames(comp_res_diff)<-species
 
 
 
-for( i in 1:9){
+for( i in 1:14){
     
-    for(j in 1:9){
+    for(j in 1:14){
         
         
         
@@ -103,15 +101,10 @@ for( i in 1:9){
 }
 
 
-
-
-
 # Multiply demographic differences by competitive response differences to obtain fitness differences
 
 
-
 fitness_diff<- comp_res_diff * dem_diff
-
 
 
 ## Values lower than 1 for fitness differences need to be removed
@@ -134,24 +127,23 @@ curve(log(1/(1-x)), add=T, col="red", lwd=3)
 
 arrows(x0=0.9899, x1=1, y0=4.6, y1=10, length=0, lty=1, lwd=3, col="red")
 
-text(x=0.8,y=9.5, "Exclusion", font=3)
+text(x=-8.0,y=9.5, "Exclusion", font=3)
 
-text(x=0.8,y=0.2, "Coexistence", font=3)
-
-
-
-##Add the effect of pollinators on niche and fitness differences----
+text(x=-4,y=-3, "Coexistence", font=3)
 
 
+
+##Add the effect of pollinators on niche and fitness differences
+###pollinators----
 
 ## build a matrix of interactions 
 
-alphas_pol <- matrix(0, nrow=9,ncol=9)
+alphas_pol <- matrix(0, nrow=14,ncol=14)
 row.names(alphas_pol)<- species
 colnames(alphas_pol)<- species
 
 for (i in 1:length(alpha_cov$pol)){ #this loop is to create a matrix with the effect of pol on changing per capita interactions
-    alphas_pol[i,1:9]<-alpha_cov$pol[i]
+    alphas_pol[i,1:14]<-alpha_cov$pol[i]
 }
 
 alpha_matrix <-as.matrix(alpha_matrix)
@@ -168,9 +160,9 @@ for (k in 1:length(alpha_matrix_pol)){
     
     xx<-alpha_matrix_pol[[k]]
     
-    for( i in 1:9){
+    for( i in 1:14){
         
-        for(j in 1:9){
+        for(j in 1:14){
             niche_diff[i,j] <- 1-(sqrt((xx[i,j]*xx[j,i])/(xx[i,i]*xx[j,j])))
         }
     }
@@ -182,15 +174,15 @@ for (k in 1:length(alpha_matrix_pol)){
 lambda_pol <- list()
 
 for (i in 1: max(total$fv1)){
-    lambda_pol[[i]]<- lambda + lambda_cov$fv1 * i
+    lambda_pol[[i]]<- lambda + lambda_cov$pol * i
 }
 
 demo_diff_pol <- list()
 for (k in 1:length(lambda_pol)){
     xx<- as.data.frame(lambda_pol[[k]])
     xx2 <- t(replicate(length(species), xx$lambda))
-    for( i in 1:9){
-        for(j in 1:9){
+    for( i in 1:14){
+        for(j in 1:14){
             dem_diff[i,j] <- (xx2[i,j]/xx2[j,i])
         }
     }
@@ -206,9 +198,9 @@ for (k in 1:length(alpha_matrix_pol)){
     
     xx<-alpha_matrix_pol[[k]]
     
-    for( i in 1:9){
+    for( i in 1:14){
         
-        for(j in 1:9){
+        for(j in 1:14){
             comp_res_diff[i,j] <- sqrt((xx[j,i]*xx[j,j])/(xx[i,i]*xx[i,j]))
         }
     }
@@ -265,202 +257,235 @@ text(x=-0.2, y=0.1, "LEMA excluded", cex=.8)
 
 ##Until this point is ok 
 
+##herbivores ----
+## build a matrix of interactions 
 
+alphas_herb <- matrix(0, nrow=14,ncol=14)
+row.names(alphas_herb)<- species
+colnames(alphas_herb)<- species
 
-pairwise_alphas_pol[1,]<-alpha_matrix[1,1:9] + alpha_cov[1,3]
+for (i in 1:length(alpha_cov$herb)){ #this loop is to create a matrix with the effect of pol on changing per capita interactions
+    alphas_herb[i,1:14]<-alpha_cov$herb[i]
+}
 
-pairwise_alphas_pol[2,]<-alpha_matrix[2,1:9] + alpha_cov[2,3]
+alpha_matrix <-as.matrix(alpha_matrix)
 
-pairwise_alphas_pol[3,]<-alpha_matrix[3,1:9] + alpha_cov[3,3]
+alpha_matrix_herb <- list()
 
-pairwise_alphas_pol[4,]<-alpha_matrix[4,1:9] + alpha_cov[4,3]
+for (i in 1: max(total$herb1)){
+    alpha_matrix_herb[[i]]<- alpha_matrix + alphas_herb * i
+} #this is to create the 21 matrices 
 
-pairwise_alphas_pol[5,]<-alpha_matrix[5,1:9] + alpha_cov[5,3]
-
-pairwise_alphas_pol[6,]<-alpha_matrix[6,1:9] + alpha_cov[6,3]
-
-pairwise_alphas_pol[7,]<-alpha_matrix[7,1:9] + alpha_cov[7,3]
-
-pairwise_alphas_pol[8,]<-alpha_matrix[8,1:9] + alpha_cov[8,3]
-
-pairwise_alphas_pol[9,]<-alpha_matrix[9,1:9] + alpha_cov[9,3]
-
-
-
-
-
-niche_diff_pol<- matrix(NA, nrow= 9, ncol=9)
-
-rownames(niche_diff_pol)<-species
-
-colnames(niche_diff_pol)<-species
-
-
-
-for( i in 1:9){
+#now calculate niche differences for each matrix 
+niche_diff_herb <- list()
+for (k in 1:length(alpha_matrix_herb)){
     
-    for(j in 1:9){
+    xx<-alpha_matrix_herb[[k]]
+    
+    for( i in 1:14){
         
-        
-        
-        niche_diff_pol[i,j] <- 1-(sqrt((pairwise_alphas_pol[i,j]*pairwise_alphas_pol[j,i])/(pairwise_alphas_pol[i,i]*pairwise_alphas_pol[j,j])))
-        
+        for(j in 1:14){
+            niche_diff[i,j] <- 1-(sqrt((xx[i,j]*xx[j,i])/(xx[i,i]*xx[j,j])))
+        }
+    }
+    niche_diff_herb[[k]]<-niche_diff
+}
+
+#now fitness differences
+#first the demographic differences
+lambda_herb <- list()
+
+for (i in 1: max(total$herb1)){
+    lambda_herb[[i]]<- lambda + lambda_cov$herb * i
+}
+
+demo_diff_herb <- list()
+for (k in 1:length(lambda_herb)){
+    xx<- as.data.frame(lambda_herb[[k]])
+    xx2 <- t(replicate(length(species), xx$lambda))
+    for( i in 1:14){
+        for(j in 1:14){
+            dem_diff[i,j] <- (xx2[i,j]/xx2[j,i])
+        }
     }
     
+    demo_diff_herb[[k]]<-dem_diff
 }
-
-
-
-#fitness differences are a multiplicative interaction between demographic differences and competitive response differences
-
-
-
-#First compute demographic differences
-
-
-fitness_pol <- matrix(0, nrow=9, ncol=1)
-
-row.names(fitness_pol)<- species
-
-colnames(fitness_pol)<- "lambda"
-
-fitness_pol[1,]<-lambda[1,1] + lambda_cov[1,1]
-
-fitness_pol[2,]<-lambda[2,1] + lambda_cov[2,1]
-
-fitness_pol[3,]<-lambda[3,1] + lambda_cov[3,1]
-
-fitness_pol[4,]<-lambda[4,1] + lambda_cov[4,1]
-
-fitness_pol[5,]<-lambda[5,1] + lambda_cov[5,1]
-
-fitness_pol[6,]<-lambda[6,1] + lambda_cov[6,1]
-
-fitness_pol[7,]<-lambda[7,1] + lambda_cov[7,1]
-
-fitness_pol[8,]<-lambda[8,1] + lambda_cov[8,1]
-
-fitness_pol[9,]<-lambda[9,1] + lambda_cov[9,1]
-
-pol <- seq(0,21, by=1)
-fitness_pol <- as.vector(fitness_pol)
-
-fitness_pol.visits <- list()
-fitness2_pol1 <- list()
-dem_diff_pol<- matrix(NA, nrow= 9, ncol=9)
-
-rownames(dem_diff_pol)<-species
-
-colnames(dem_diff_pol)<-species
-
-
-for (i in 1: length(pol)){
-num <- pol[i]
-fitness_pol.visits [[i]] <- (fitness_pol * num)
-fitness2_pol1 [[i]] <-replicate(9, fitness_pol.visits [[i]])
-
-    for( k in 1:9){
-    
-         for(j in 1:9){
-    
-            
-            dem_diff_pol[[i]][k,j]<- as.matrix((fitness2_pol1[[i]][k,j])/(fitness2_pol1[[i]][j,k]))
-          
-    }
-    
-}
-
-
-}
-
-
-
 
 
 
 #Second compute competitive response differences
-
-comp_res_diff_pol<- matrix(NA, nrow= 9, ncol=9)
-
-rownames(comp_res_diff_pol)<-species
-
-colnames(comp_res_diff_pol)<-species
-
-comp_res_diff_pol <- list()
-
-for( i in 1:9){
+comp_res_diff_herb <- list()
+for (k in 1:length(alpha_matrix_herb)){
     
-    for(j in 1:9){
-        for( k in 1:length(pol)){
+    xx<-alpha_matrix_herb[[k]]
+    
+    for( i in 1:14){
         
+        for(j in 1:14){
+            comp_res_diff[i,j] <- sqrt((xx[j,i]*xx[j,j])/(xx[i,i]*xx[i,j]))
+        }
+    }
+    comp_res_diff_herb[[k]]<-comp_res_diff
+}
+
+
+fitness_diff_herb <- list()
+for (k in 1:length(alpha_matrix_herb)){
+    
+    fitness_diff_herb[[k]]<- comp_res_diff_herb[[k]] * demo_diff_herb[[k]]
+}
+
+#now that we have the effect of polinators from 1 to 54 abundances (min and max), let see how the landscape changes
+#select a species pair for an example for instance LEMA SPRU
+
+example_niche1<- list()
+for (i in 1:length(niche_diff_herb)){
+    example_niche1[[i]] <- niche_diff_herb[[i]]["LEMA", "HOMA"] 
+}
+example_niche1 <- unlist(example_niche1)
+
+example_fitness1<- list()
+for (i in 1:length(fitness_diff_herb)){
+    example_fitness1[[i]] <- fitness_diff_herb[[i]]["LEMA", "HOMA"] 
+}
+example_fitness1 <- unlist(example_fitness1)
+
+
+#according to the data we see that pollinator in this case change competitive outcomes from one species to the another
+#it can be better seen in this graph
+boun_df1<-data.frame(niche_overlap=c(seq(0,2, 0.05))) # creating a vector with niche overlap
+boun_df1$niche_diff<-(1-boun_df1$niche_overlap) # calculating stabilizating differences from niche overlap 1-rho
+boun_df1$fitness_differences_sp_1<-(1/boun_df1$niche_overlap) # solid line in your graph this is ok
+boun_df1$fitness_differences_sp_temp<- 1-boun_df1$fitness_differences_sp_1 #this is an intermediate step to see the differences above one 
+#which is later incorporated into the 2 species
+boun_df1$fitness_differences_sp_2<- 1+ boun_df1$fitness_differences_sp_temp
+boun_df1<-boun_df1[, -4]
+#remove the intermediate step 
+plot(example_niche1, log(example_fitness1), xlim=c(-0.8, 0.5), pch=1, lwd=2, xlab="Niche differences", ylab="Fitness differences (Log. Transformed)", main= "A) Floral Visitors")
+
+points(boun_df1$niche_diff, boun_df1$fitness_differences_sp_1)
+lines(boun_df1$niche_diff, boun_df1$fitness_differences_sp_1, type = "l", lty = 1, col="red")
+lines(boun_df1$niche_diff, boun_df1$fitness_differences_sp_2, type = "l", lty = 1, col="blue")
+text(x=-0.3, y=1, "Priority effect", cex=.8)
+text(x=0.3, y=1, "Coexistence", cex=.8)
+text(x=0.3, y=2.5, "HOMA excluded", cex=.8)
+text(x=-0.2, y=0.1, "LEMA excluded", cex=.8)
+
+
+#3. salinidad ----
+## build a matrix of interactions 
+
+alphas_salt <- matrix(0, nrow=14,ncol=14)
+row.names(alphas_salt)<- species
+colnames(alphas_salt)<- species
+
+for (i in 1:length(alpha_cov$salt)){ #this loop is to create a matrix with the effect of pol on changing per capita interactions
+    alphas_salt[i,1:14]<-alpha_cov$salt[i]
+}
+
+alpha_matrix <-as.matrix(alpha_matrix)
+
+alpha_matrix_salt <- list()
+
+for (i in 1: max(total$sal)){
+    alpha_matrix_salt[[i]]<- alpha_matrix + alphas_salt * i
+} #this is to create the 21 matrices 
+
+#now calculate niche differences for each matrix 
+niche_diff_salt <- list()
+for (k in 1:length(alpha_matrix_salt)){
+    
+    xx<-alpha_matrix_salt[[k]]
+    
+    for( i in 1:14){
         
-        comp_res_diff_pol[i,j] <- as.matrix(sqrt((pairwise_alphas_pol[j,i]*pairwise_alphas_pol[j,j]))*k/
-                                                ((pairwise_alphas_pol[i,i]*pairwise_alphas_pol[i,j])*k))
-        }    
+        for(j in 1:14){
+            niche_diff[i,j] <- 1-(sqrt((xx[i,j]*xx[j,i])/(xx[i,i]*xx[j,j])))
+        }
+    }
+    niche_diff_salt[[k]]<-niche_diff
+}
+
+#now fitness differences
+#first the demographic differences
+lambda_salt <- list()
+
+for (i in 1: max(total$sal)){
+    lambda_salt[[i]]<- lambda + lambda_cov$salt * i
+}
+
+demo_diff_salt <- list()
+for (k in 1:length(lambda_salt)){
+    xx<- as.data.frame(lambda_salt[[k]])
+    xx2 <- t(replicate(length(species), xx$lambda))
+    for( i in 1:14){
+        for(j in 1:14){
+            dem_diff[i,j] <- (xx2[i,j]/xx2[j,i])
+        }
     }
     
+    demo_diff_salt[[k]]<-dem_diff
 }
 
 
 
-# Multiply demographic differences by competitive response differences to obtain fitness differences
-
-fitness_diff_pol<- comp_res_diff_pol * dem_diff_pol
-
-
-
-fitness_diff_pol[fitness_diff_pol<1]<-NA
-
-# Ok, once calculated niche and fitness differences, plot them, 
-
-diag(niche_diff_pol)=NA
-
-diag(fitness_diff_pol)=NA
-
-
-
-points(niche_diff_pol, log(fitness_diff_pol), pch=16, lwd=1, col="black")
-
-legend("topleft", c("No floral visitors", "Floral visitors"), col = c(1, 1), lwd=c(1,1), lty=c(0,0), 
-       
-       pch=c(1,16), bty="n",
-       
-       merge = TRUE)
+#Second compute competitive response differences
+comp_res_diff_salt <- list()
+for (k in 1:length(alpha_matrix_salt)){
+    
+    xx<-alpha_matrix_salt[[k]]
+    
+    for( i in 1:14){
+        
+        for(j in 1:14){
+            comp_res_diff[i,j] <- sqrt((xx[j,i]*xx[j,j])/(xx[i,i]*xx[i,j]))
+        }
+    }
+    comp_res_diff_salt[[k]]<-comp_res_diff
+}
 
 
+fitness_diff_salt <- list()
+for (k in 1:length(alpha_matrix_salt)){
+    
+    fitness_diff_salt[[k]]<- comp_res_diff_salt[[k]] * demo_diff_salt[[k]]
+}
 
-#↑esta ultima parte mirar detenidamente, ya que segun los tratamientos que ponga y las species seran una cosa u otra
+#now that we have the effect of salt from 1 to 54 abundances (min and max), let see how the landscape changes
+#select a species pair for an example for instance LEMA SPRU
 
-#Use arrows to conect dots between treatments. 
+example_niche2<- list()
+for (i in 1:length(niche_diff_salt)){
+    example_niche2[[i]] <- niche_diff_salt[[i]]["LEMA", "HOMA"] 
+}
+example_niche2 <- unlist(example_niche2)
 
-fitness_diff[6,1]<-fitness_diff[1,6]
-
-fitness_diff[1,6]<-NA
-
-fitness_diff[3,2]<-fitness_diff[2,3]
-
-fitness_diff[2,3]<-NA
-
-fitness_diff[5,3]<-fitness_diff[3,5]
-
-fitness_diff[3,5]<-NA
-
-fitness_diff[6,4]<-fitness_diff[4,6]
-
-fitness_diff[4,6]<-NA
-
-
+example_fitness2<- list()
+for (i in 1:length(fitness_diff_salt)){
+    example_fitness2[[i]] <- fitness_diff_salt[[i]]["LEMA", "HOMA"] 
+}
+example_fitness2 <- unlist(example_fitness2)
 
 
+#according to the data we see that pollinator in this case change competitive outcomes from one species to the another
+#it can be better seen in this graph
+boun_df2<-data.frame(niche_overlap=c(seq(0,2, 0.05))) # creating a vector with niche overlap
+boun_df2$niche_diff<-(1-boun_df2$niche_overlap) # calculating stabilizating differences from niche overlap 1-rho
+boun_df2$fitness_differences_sp_1<-(1/boun_df2$niche_overlap) # solid line in your graph this is ok
+boun_df2$fitness_differences_sp_temp<- 1-boun_df2$fitness_differences_sp_1 #this is an intermediate step to see the differences above one 
+#which is later incorporated into the 2 species
+boun_df2$fitness_differences_sp_2<- 1+ boun_df2$fitness_differences_sp_temp
+boun_df2<-boun_df2[, -4]
+#remove the intermediate step 
+plot(example_niche2, log(example_fitness2), xlim=c(-0.5, 0.5), pch=1, lwd=2, xlab="Niche differences", ylab="Fitness differences (Log. Transformed)", main= "A) Floral Visitors")
 
-fitness_diff_pol[5,3]<-fitness_diff_pol[3,5]
+points(boun_df2$niche_diff, boun_df2$fitness_differences_sp_1)
+lines(boun_df2$niche_diff, boun_df2$fitness_differences_sp_1, type = "l", lty = 1, col="red")
+lines(boun_df2$niche_diff, boun_df2$fitness_differences_sp_2, type = "l", lty = 1, col="blue")
+text(x=-0.3, y=1, "Priority effect", cex=.8)
+text(x=0.3, y=1, "Coexistence", cex=.8)
+text(x=0.3, y=2.5, "HOMA excluded", cex=.8)
+text(x=-0.2, y=0.1, "LEMA excluded", cex=.8)
 
-fitness_diff_pol[3,5]<-NA
 
-fitness_diff_pol[2,6]<-fitness_diff_pol[6,2]
-
-fitness_diff_pol[6,2]<-NA
-
-
-
-arrows(x0=niche_diff, x1=niche_diff_pol, y0=log(fitness_diff), y1=log(fitness_diff_pol), length=0.10, lty=2)
