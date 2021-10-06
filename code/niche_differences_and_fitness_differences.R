@@ -489,7 +489,7 @@ text(x=-0.2, y=0.1, "LEMA excluded", cex=.8)
 #coexistence metrics
 
 #this example is with pollinators 
-#changes in competitive dominance
+#1. changes in competitive dominance
 comp_domin <-list()
 change_comp_domin<-list()
 xx<-rep("NA", times=21)
@@ -505,11 +505,29 @@ for(i in 1:91){ #this is because there are 91 sp. combinations
     change_comp_domin[[i]]<-as.numeric(xx)
 }        
 
+##this is what needs to be solved to select 
+#wheter a vector include values over 1 below 1 or both. Only when include both then it is a change in competitive dominance. 
 for(i in 1:length(change_comp_domin)){
-    if(change_comp_domin[[i]]>0 | change_comp_domin[[i]]<0) == TRUE{}
+    if(change_comp_domin[[i]]>0 | change_comp_domin[[i]]<0) == TRUE{} 
+    
 }
 
-    
-    
+#2. the second metric is to measure the excess or deficit 
+#of niche differences for coexistence according to the observed fitness differences. 
+f_n_comparison_pol<- list()
 
+for(i in 1:length(fitness_diff_pol)){
+    nn <- c(niche_diff_pol[[i]])
+    ff <- c(fitness_diff_pol[[i]])
+    xx<-cbind(ff,nn)
+    xx<-as.data.frame(subset(xx, ff>=1.00000001)) #by doing this we select only fitness diff over one and we also eliminate the intra in which fit_diff by definition is equal to 1
+    xx$nd_coex <- 1-(1/xx$ff) #this is the niche differences observed for coexistence accroding to fitness differences
+    xx$excess <- xx$nn - xx$nd_coex  #this is the excess (positive) or deficit (negative of niche differences)
+    f_n_comparison_pol[[i]]<-xx$excess
+}
 
+f_n_comparison_pol<- t(do.call(rbind.data.frame, f_n_comparison_pol))
+rownames(f_n_comparison_pol)<- c(1:91) #for brevity I have not included the names of each pair in rows names this is something to do
+#and we need to focus on how c() create the objects nn and ff
+#besides this pollinators do not do much and they do not increase or decrease an excess or deficit of niche differences
+#all pairs except 1 (pair row 55) have a deficit (negative values) of niche differences 
