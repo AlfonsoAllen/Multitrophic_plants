@@ -1,6 +1,5 @@
 library(tidyverse)
 
-
 load("data/alpha_matrix_final.Rda")
 load("data/lambdas_final.Rda")
 load("data/lambdas_cov_final.Rda")
@@ -75,7 +74,6 @@ for( i in 1:14){
     }
     
 }
-
 
 
 #Second compute competitive response differences
@@ -240,7 +238,10 @@ boun_df$fitness_differences_sp_temp<- 1-boun_df$fitness_differences_sp_1 #this i
 boun_df$fitness_differences_sp_2<- 1+ boun_df$fitness_differences_sp_temp
 boun_df<-boun_df[, -4]
 #remove the intermediate step 
-plot(example_niche, log(example_fitness), xlim=c(-0.5, 0.5), pch=1, lwd=2, xlab="Niche differences", ylab="Fitness differences (Log. Transformed)", main= "A) Floral Visitors")
+plot(example_niche, log(example_fitness),  pch=1, lwd=2, xlab="Niche differences", ylab="Fitness differences (Log. Transformed)", 
+                                        main= "A) Floral Visitors")
+
+#xlim=c(-0.5, 0.5)# lo he quitado de plot
 
 points(boun_df$niche_diff, boun_df$fitness_differences_sp_1)
 lines(boun_df$niche_diff, boun_df$fitness_differences_sp_1, type = "l", lty = 1, col="red")
@@ -264,7 +265,7 @@ alphas_herb <- matrix(0, nrow=14,ncol=14)
 row.names(alphas_herb)<- species
 colnames(alphas_herb)<- species
 
-for (i in 1:length(alpha_cov$herb)){ #this loop is to create a matrix with the effect of pol on changing per capita interactions
+for (i in 1:length(alpha_cov$herb)){ #this loop is to create a matrix with the effect of herb on changing per capita interactions
     alphas_herb[i,1:14]<-alpha_cov$herb[i]
 }
 
@@ -336,8 +337,8 @@ for (k in 1:length(alpha_matrix_herb)){
     fitness_diff_herb[[k]]<- comp_res_diff_herb[[k]] * demo_diff_herb[[k]]
 }
 
-#now that we have the effect of polinators from 1 to 54 abundances (min and max), let see how the landscape changes
-#select a species pair for an example for instance LEMA SPRU
+#now that we have the effect of herbivores from 1 to 54 abundances (min and max), let see how the landscape changes
+#select a species pair for an example for instance LEMA HOMA
 
 example_niche1<- list()
 for (i in 1:length(niche_diff_herb)){
@@ -352,7 +353,7 @@ for (i in 1:length(fitness_diff_herb)){
 example_fitness1 <- unlist(example_fitness1)
 
 
-#according to the data we see that pollinator in this case change competitive outcomes from one species to the another
+#according to the data we see that herbivores in this case change competitive outcomes from one species to the another
 #it can be better seen in this graph
 boun_df1<-data.frame(niche_overlap=c(seq(0,2, 0.05))) # creating a vector with niche overlap
 boun_df1$niche_diff<-(1-boun_df1$niche_overlap) # calculating stabilizating differences from niche overlap 1-rho
@@ -380,7 +381,7 @@ alphas_salt <- matrix(0, nrow=14,ncol=14)
 row.names(alphas_salt)<- species
 colnames(alphas_salt)<- species
 
-for (i in 1:length(alpha_cov$salt)){ #this loop is to create a matrix with the effect of pol on changing per capita interactions
+for (i in 1:length(alpha_cov$salt)){ #this loop is to create a matrix with the effect of salt on changing per capita interactions
     alphas_salt[i,1:14]<-alpha_cov$salt[i]
 }
 
@@ -452,7 +453,7 @@ for (k in 1:length(alpha_matrix_salt)){
     fitness_diff_salt[[k]]<- comp_res_diff_salt[[k]] * demo_diff_salt[[k]]
 }
 
-#now that we have the effect of salt from 1 to 54 abundances (min and max), let see how the landscape changes
+#now that we have the effect of salt from 0.0894 to 1.977 abundances (min and max), let see how the landscape changes
 #select a species pair for an example for instance LEMA SPRU
 
 example_niche2<- list()
