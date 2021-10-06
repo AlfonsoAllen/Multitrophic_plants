@@ -105,9 +105,6 @@ for( i in 1:14){
 fitness_diff<- comp_res_diff * dem_diff
 
 
-## Values lower than 1 for fitness differences need to be removed
-
-fitness_diff[fitness_diff<1]<-NA
 
 # Ok, once calculated niche and fitness differences, plot them, 
 
@@ -123,7 +120,7 @@ plot(niche_diff, log(fitness_diff), pch=1, lwd=2, xlab="Niche differences", ylab
 
 curve(log(1/(1-x)), add=T, col="red", lwd=3)
 
-arrows(x0=0.9899, x1=1, y0=4.6, y1=10, length=0, lty=1, lwd=3, col="red")
+arrows(x0=0.9899, x1=1, y0=0, y1=10, length=0, lty=1, lwd=3, col="red")
 
 text(x=-8.0,y=9.5, "Exclusion", font=3)
 
@@ -172,7 +169,7 @@ for (k in 1:length(alpha_matrix_pol)){
 lambda_pol <- list()
 
 for (i in 1: max(total$fv1)){
-    lambda_pol[[i]]<- lambda + lambda_cov$pol * i
+    lambda_pol[[i]]<- lambda*(1 + lambda_cov$pol * i)
 }
 
 demo_diff_pol <- list()
@@ -230,22 +227,22 @@ example_fitness <- unlist(example_fitness)
 
 #according to the data we see that pollinator in this case change competitive outcomes from one species to the another
 #it can be better seen in this graph
-boun_df<-data.frame(niche_overlap=c(seq(0,2, 0.05))) # creating a vector with niche overlap
+boun_df<-data.frame(niche_overlap=c(seq(0,5, 0.02))) # creating a vector with niche overlap
 boun_df$niche_diff<-(1-boun_df$niche_overlap) # calculating stabilizating differences from niche overlap 1-rho
-boun_df$fitness_differences_sp_1<-(1/boun_df$niche_overlap) # solid line in your graph this is ok
+boun_df$fitness_differences_sp_1<-(1/boun_df$niche_overlap) # coexistence line
 boun_df$fitness_differences_sp_temp<- 1-boun_df$fitness_differences_sp_1 #this is an intermediate step to see the differences above one 
 #which is later incorporated into the 2 species
 boun_df$fitness_differences_sp_2<- 1+ boun_df$fitness_differences_sp_temp
 boun_df<-boun_df[, -4]
 #remove the intermediate step 
-plot(example_niche, log(example_fitness),  pch=1, lwd=2, xlab="Niche differences", ylab="Fitness differences (Log. Transformed)", 
-                                        main= "A) Floral Visitors")
+plot(example_niche, log(1/example_fitness),  pch=1, lwd=2, xlim=c(0, 1), ylim=c(0,max(log(1/example_fitness))),
+     xlab="Niche differences", ylab="Fitness differences (Log. Transformed)",  main= "A) Floral Visitors")
 
-#xlim=c(-0.5, 0.5)# lo he quitado de plot
 
-points(boun_df$niche_diff, boun_df$fitness_differences_sp_1)
-lines(boun_df$niche_diff, boun_df$fitness_differences_sp_1, type = "l", lty = 1, col="red")
-lines(boun_df$niche_diff, boun_df$fitness_differences_sp_2, type = "l", lty = 1, col="blue")
+points(boun_df$niche_diff, log(boun_df$fitness_differences_sp_1))
+lines(boun_df$niche_diff, log(boun_df$fitness_differences_sp_1), type = "l", lty = 1, col="red")
+lines(boun_df$niche_diff, log(boun_df$fitness_differences_sp_2), type = "l", lty = 1, col="blue")
+abline(h=0)
 text(x=-0.3, y=1, "Priority effect", cex=.8)
 text(x=0.3, y=1, "Coexistence", cex=.8)
 text(x=0.3, y=2.5, "SPRU excluded", cex=.8)
@@ -488,5 +485,31 @@ text(x=-0.3, y=1, "Priority effect", cex=.8)
 text(x=0.3, y=1, "Coexistence", cex=.8)
 text(x=0.3, y=2.5, "HOMA excluded", cex=.8)
 text(x=-0.2, y=0.1, "LEMA excluded", cex=.8)
+
+#coexistence metrics
+
+#this example is with pollinators 
+#changes in competitive dominance
+comp_domin <-list()
+change_comp_domin<-list()
+xx<-rep("NA", times=21)
+
+for(i in 1:length(fitness_diff_pol)){
+    comp_domin[[i]] <-t(fitness_diff_pol[[i]])[lower.tri(t(fitness_diff_pol[[i]]))]
+}
+
+for(i in 1:91){ #this is because there are 91 sp. combinations 
+    for(k in 1:length(fitness_diff_pol)){
+        xx[k]<- comp_domin[[k]][i]
+    }
+    change_comp_domin[[i]]<-as.numeric(xx)
+}        
+
+for(i in 1:length(change_comp_domin)){
+    if(change_comp_domin[[i]]>0 | change_comp_domin[[i]]<0) == TRUE{}
+}
+
+    
+    
 
 
